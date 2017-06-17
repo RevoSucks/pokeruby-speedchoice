@@ -13,7 +13,7 @@
 #include "field_map_obj_helpers.h"
 #include "field_message_box.h"
 #include "field_player_avatar.h"
-#include "field_screeneffect.h"
+#include "field_weather.h"
 #include "field_special_scene.h"
 #include "heal_location.h"
 #include "link.h"
@@ -25,6 +25,7 @@
 #include "palette.h"
 #include "play_time.h"
 #include "rng.h"
+#include "roamer.h"
 #include "safari_zone.h"
 #include "script.h"
 #include "script_pokemon_80C4.h"
@@ -67,7 +68,7 @@ extern u16 (*gUnknown_03000584)(u32);
 extern u8 gUnknown_03000588;
 
 extern u16 word_3004858;
-extern void (*gUnknown_0300485C)(void);
+extern void (*gFieldCallback)(void);
 extern u8 gUnknown_03004860;
 extern u8 gFieldLinkPlayerCount;
 
@@ -165,8 +166,8 @@ void sub_805308C(void)
     FlagReset(SYS_SAFARI_MODE);
     sub_8054164();
     ResetCyclingRoadChallengeData();
-    mapnumbers_history_shift_sav1_0_2_4_out();
-    sub_8134348();
+    UpdateLocationHistoryForRoamer();
+    RoamerMoveToOtherLocationSet();
 }
 
 void ResetGameStats(void)
@@ -470,9 +471,9 @@ struct MapConnection *sub_8053818(u8 dir)
 
     if (connection == NULL)
         return NULL;
-	
-	for(i = 0; i < count; i++, connection++)
-		if (connection->direction == dir)
+
+    for(i = 0; i < count; i++, connection++)
+        if (connection->direction == dir)
             return connection;
 
     return NULL;
@@ -532,8 +533,8 @@ void sub_80538F0(u8 mapGroup, u8 mapNum)
         sub_807D874(i);
 
     sub_8072ED0();
-    mapnumbers_history_shift_sav1_0_2_4_out();
-    sub_8134394();
+    UpdateLocationHistoryForRoamer();
+    RoamerMove();
     DoCurrentWeather();
     ResetFieldTasksArgs();
     mapheader_run_script_with_tag_x5();
@@ -562,8 +563,8 @@ void sub_8053994(u32 a1)
     sub_8053C98();
     sav1_reset_battle_music_maybe();
     mapheader_run_script_with_tag_x3();
-    mapnumbers_history_shift_sav1_0_2_4_out();
-    sub_8134348();
+    UpdateLocationHistoryForRoamer();
+    RoamerMoveToOtherLocationSet();
     not_trainer_hill_battle_pyramid();
     if (a1 != 1 && v3)
     {
@@ -1082,11 +1083,11 @@ void sub_80543DC(u16 (*a1)(u32))
 
 void sub_80543E8(void)
 {
-    if (gUnknown_0300485C)
-        gUnknown_0300485C();
+    if (gFieldCallback)
+        gFieldCallback();
     else
         mapldr_default();
-    gUnknown_0300485C = NULL;
+    gFieldCallback = NULL;
 }
 
 void CB2_NewGame(void)
@@ -1099,7 +1100,7 @@ void CB2_NewGame(void)
     PlayTimeCounter_Start();
     ScriptContext1_Init();
     ScriptContext2_Disable();
-    gUnknown_0300485C = ExecuteTruckSequence;
+    gFieldCallback = ExecuteTruckSequence;
     do_load_map_stuff_loop(&gMain.state);
     SetFieldVBlankCallback();
     set_callback1(c1_overworld);
@@ -1119,7 +1120,7 @@ void CB2_WhiteOut(void)
         player_avatar_init_params_reset();
         ScriptContext1_Init();
         ScriptContext2_Disable();
-        gUnknown_0300485C = sub_8080B60;
+        gFieldCallback = sub_8080B60;
         val = 0;
         do_load_map_stuff_loop(&val);
         SetFieldVBlankCallback();
@@ -1166,7 +1167,7 @@ void sub_8054534(void)
 void sub_8054588(void)
 {
     FieldClearVBlankHBlankCallbacks();
-    gUnknown_0300485C = sub_8080AC4;
+    gFieldCallback = sub_8080AC4;
     SetMainCallback2(c2_80567AC);
 }
 
@@ -1216,7 +1217,7 @@ void sub_805465C(void)
     sub_8054F70();
     set_callback1(sub_8055354);
     sub_80543DC(sub_8055390);
-    gUnknown_0300485C = sub_8080A3C;
+    gFieldCallback = sub_8080A3C;
     ScriptContext1_Init();
     ScriptContext2_Disable();
     c2_exit_to_overworld_2_switch();
@@ -1225,28 +1226,28 @@ void sub_805465C(void)
 void sub_805469C(void)
 {
     FieldClearVBlankHBlankCallbacks();
-    gUnknown_0300485C = atk17_seteffectuser;
+    gFieldCallback = atk17_seteffectuser;
     c2_exit_to_overworld_2_switch();
 }
 
 void sub_80546B8(void)
 {
     FieldClearVBlankHBlankCallbacks();
-    gUnknown_0300485C = sub_80809B0;
+    gFieldCallback = sub_80809B0;
     c2_exit_to_overworld_2_switch();
 }
 
 void c2_exit_to_overworld_1_continue_scripts_restart_music(void)
 {
     FieldClearVBlankHBlankCallbacks();
-    gUnknown_0300485C = sub_8080990;
+    gFieldCallback = sub_8080990;
     c2_exit_to_overworld_2_switch();
 }
 
 void sub_80546F0(void)
 {
     FieldClearVBlankHBlankCallbacks();
-    gUnknown_0300485C = sub_8080B60;
+    gFieldCallback = sub_8080B60;
     c2_exit_to_overworld_2_switch();
 }
 
@@ -1281,7 +1282,7 @@ void CB2_ContinueSavedGame(void)
     }
     else
     {
-        gUnknown_0300485C = sub_805470C;
+        gFieldCallback = sub_805470C;
         set_callback1(c1_overworld);
         c2_exit_to_overworld_2_switch();
     }

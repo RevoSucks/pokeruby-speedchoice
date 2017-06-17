@@ -1,7 +1,7 @@
 #include "global.h"
 #include "asm.h"
 #include "decompress.h"
-#include "field_screeneffect.h"
+#include "field_weather.h"
 #include "main.h"
 #include "menu.h"
 #include "money.h"
@@ -9,6 +9,7 @@
 #include "script.h"
 #include "sound.h"
 #include "sprite.h"
+#include "strings.h"
 #include "task.h"
 
 struct UnknownShopStruct
@@ -28,8 +29,6 @@ extern struct MenuAction gUnknown_083CC6D0[];
 
 extern u8 gUnknown_083CC6E8[];
 extern u8 gUnknown_083CC6EB[];
-extern u8 gOtherText_CanIHelpYou[];
-extern u8 gOtherText_AnythingElse[];
 extern u8 gBuyMenuFrame_Gfx[];
 
 extern u16 gBuyMenuFrame_Tilemap[];
@@ -38,7 +37,7 @@ extern u16 gUnknown_083CC710[2];
 
 extern void sub_80A6300(void);
 extern void sub_80BE3BC(void);
-extern void DisplayItemMessageOnField(u8, u8*, TaskFunc, u16);
+extern void DisplayItemMessageOnField(u8, const u8*, TaskFunc, u16);
 extern u8 sub_807D770(void);
 extern void pal_fill_black(void);
 extern void sub_80B3764(int, int);
@@ -75,7 +74,7 @@ u8 CreateShopMenu(bool8 var)
         PrintMenuItemsReordered(1, 1, 2, gUnknown_083CC6D0, (u8 *)gUnknown_083CC6EB);
     }
     InitMenu(0, 1, 1, gUnknown_03000708.unkA + 1, 0, 9);
-    
+
     return CreateTask(sub_80B2E38, 8);
 }
 
@@ -155,12 +154,12 @@ void sub_80B2F30(u8 taskId)
 
 void HandleShopMenuQuit(u8 taskId)
 {
-    sub_8072DEC();
+    HandleDestroyMenuCursors();
     MenuZeroFillWindowRect(0, 0, 11, 8);
     sub_80BE3BC(); // in tv.s?
     ScriptContext2_Disable();
     DestroyTask(taskId);
-    
+
     if(gUnknown_03000708.callback)
         gUnknown_03000708.callback(); // run the callback if it exists.
 }
@@ -289,7 +288,7 @@ void BuyMenuDrawGraphics(void)
 void sub_80B3240(void)
 {
     u16 tempArr[2];
-    
+
     memcpy(tempArr, gUnknown_083CC710, sizeof(tempArr));
     LoadPalette(&tempArr[1], 0xD1, 2);
     LoadPalette(&tempArr[0], 0xD8, 2);
@@ -298,7 +297,7 @@ void sub_80B3240(void)
 void sub_80B3270(void)
 {
     sub_80F944C();
-    
+
     if(gUnknown_03000708.itemCount > 7)
     {
         CreateVerticalScrollIndicators(0, 172, 12);
@@ -313,7 +312,7 @@ void sub_80B32A4(void)
         sub_80F979C(0, 1);
     else
         sub_80F979C(0, 0);
-    
+
     if(gUnknown_03000708.unkB + 7 >= gUnknown_03000708.itemCount)
         sub_80F979C(1, 1);
     else
@@ -342,17 +341,17 @@ void BuyMenuDrawMapMetatile(int var1, int var2, u16 *var3, s8 var4)
 
     switch(tempVar4)
     {
-        case 0: // _080B335C
-            BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[2], offset1, offset2, var3);
-            BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[1], offset1, offset2, var3 + 4);
-            break;
-        case 1: // _080B3364
-            BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[3], offset1, offset2, var3);
-            BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[2], offset1, offset2, var3 + 4);
-            break;
-        case 2: // _080B3398
-            BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[3], offset1, offset2, var3);
-            BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[1], offset1, offset2, var3 + 4);
-            break;
+    case 0: // _080B335C
+        BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[2], offset1, offset2, var3);
+        BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[1], offset1, offset2, var3 + 4);
+        break;
+    case 1: // _080B3364
+        BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[3], offset1, offset2, var3);
+        BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[2], offset1, offset2, var3 + 4);
+        break;
+    case 2: // _080B3398
+        BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[3], offset1, offset2, var3);
+        BuyMenuDrawMapMetatileLayer(gBGTilemapBuffers[1], offset1, offset2, var3 + 4);
+        break;
     }
 }

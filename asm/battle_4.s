@@ -8832,7 +8832,7 @@ _080203B8:
 	muls r0, r1
 	ldr r1, _08020400 @ =gPlayerParty
 	adds r0, r1
-	bl sub_8040AA4
+	bl IsTradedMon
 	lsls r0, 24
 	cmp r0, 0
 	beq _08020404
@@ -13392,7 +13392,7 @@ sub_8022784: @ 8022784
 	lsls r0, 16
 	lsrs r0, 16
 	movs r1, 0x2
-	bl sub_8090D90
+	bl GetNationalPokedexFlag
 _080227D0:
 	ldr r2, _08022824 @ =gUnknown_02024C0C
 	ldr r1, _08022828 @ =gBitTable
@@ -15716,7 +15716,7 @@ sub_8023AD8: @ 8023AD8
 	movs r2, 0x1D
 	movs r3, 0xD
 	bl sub_802BBD4
-	bl sub_814A7FC
+	bl DestroyMenuCursor
 	add sp, 0x4
 	pop {r0}
 	bx r0
@@ -15879,7 +15879,7 @@ _08023C3E:
 	subs r2, 0x1
 	lsls r2, 24
 	lsrs r2, 24
-	ldr r3, _08023C78 @ =sub_807AD58
+	ldr r3, _08023C78 @ =ReshowBattleScreenAfterMenu
 	ldr r4, _08023C7C @ =word_2024E82
 	ldrh r4, [r4]
 	str r4, [sp]
@@ -15894,7 +15894,7 @@ _08023C68: .4byte gPaletteFade
 _08023C6C: .4byte gPlayerParty
 _08023C70: .4byte 0x00016018
 _08023C74: .4byte gPlayerPartyCount
-_08023C78: .4byte sub_807AD58
+_08023C78: .4byte ReshowBattleScreenAfterMenu
 _08023C7C: .4byte word_2024E82
 _08023C80: .4byte 0x0001601a
 _08023C84:
@@ -15948,7 +15948,7 @@ _08023CC8:
 	lsls r0, 16
 	lsrs r4, r0, 16
 	adds r0, r4, 0
-	bl sub_8040A00
+	bl IsHMMove2
 	cmp r0, 0
 	beq _08023D20
 	ldr r0, _08023D14 @ =0x0000013f
@@ -31340,7 +31340,7 @@ _0802B73C:
 	lsls r0, 16
 	lsrs r0, 16
 	movs r1, 0x1
-	bl sub_8090D90
+	bl GetNationalPokedexFlag
 	lsls r0, 24
 	movs r4, 0xA
 	cmp r0, 0
@@ -31657,7 +31657,7 @@ sub_802B9E0: @ 802B9E0
 	lsls r0, 16
 	lsrs r0, 16
 	movs r1, 0x1
-	bl sub_8090D90
+	bl GetNationalPokedexFlag
 	lsls r0, 24
 	cmp r0, 0
 	beq _0802BA2C
@@ -31688,7 +31688,7 @@ _0802BA2C:
 	lsls r0, 16
 	lsrs r0, 16
 	movs r1, 0x3
-	bl sub_8090D90
+	bl GetNationalPokedexFlag
 	ldrb r0, [r6]
 	adds r2, r0, 0
 	muls r2, r5

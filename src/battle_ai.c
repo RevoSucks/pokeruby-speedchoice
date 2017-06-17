@@ -4,6 +4,7 @@
 #include "asm.h"
 #include "battle.h"
 #include "battle_move_effects.h"
+#include "data2.h"
 #include "item.h"
 #include "moves.h"
 #include "pokemon.h"
@@ -36,8 +37,6 @@ extern u8 gCritMultiplier;
 extern u16 gTrainerBattleOpponent;
 extern u32 gBitTable[];
 extern u8 *BattleAIs[];
-extern struct Trainer gTrainers[];
-extern struct BattleMove gBattleMoves[];
 extern struct BaseStats gBaseStats[];
 
 /*
@@ -270,7 +269,7 @@ void BattleAI_HandleItemUseBeforeAISetup(void)
     s32 i;
     u8 *data = (u8 *)UNK_2016A00_STRUCT;
 
-    for (i = 0; (u32)i < sizeof(struct UnknownStruct1); i++)
+    for (i = 0; (u32)i < sizeof(struct UnkBattleStruct1); i++)
         data[i] = 0;
 
     if ((gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -334,6 +333,10 @@ void BattleAI_SetupAIData(void)
         AI_THINKING_STRUCT->aiFlags = 0x20000000;
     else if (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE)
         AI_THINKING_STRUCT->aiFlags = 0x80000000;
+#ifdef GERMAN
+    else if (gBattleTypeFlags & 0x900 || gTrainerBattleOpponent == 0x400)
+        AI_THINKING_STRUCT->aiFlags = 7;
+#endif
     else // otherwise, just set aiFlags to whatever flags the trainer has set in their data.
         AI_THINKING_STRUCT->aiFlags = gTrainers[gTrainerBattleOpponent].aiFlags;
 }
@@ -421,7 +424,7 @@ void BattleAI_DoAIProcessing(void)
                     AI_THINKING_STRUCT->aiState = AIState_SettingUp; // as long as their are more moves to process, keep setting this to setup state.
                 else
                     AI_THINKING_STRUCT->aiState++; // done processing.
-                AI_THINKING_STRUCT->aiAction &= (AI_ACTION_FLEE | AI_ACTION_WATCH | AI_ACTION_DO_NOT_ATTACK | 
+                AI_THINKING_STRUCT->aiAction &= (AI_ACTION_FLEE | AI_ACTION_WATCH | AI_ACTION_DO_NOT_ATTACK |
                 AI_ACTION_UNK5 | AI_ACTION_UNK6 | AI_ACTION_UNK7 | AI_ACTION_UNK8); // disable AI_ACTION_DONE.
             }
             break;
@@ -1995,7 +1998,7 @@ static void BattleAICmd_get_item(void)
         index = gEnemyMonIndex;
 
     // this hack and a half matches. whatever. i dont care. someone else fix this mess later. PS: still cant fix this.
-    AI_THINKING_STRUCT->funcResult = unk_2000000[0x160CC + (index * 2)];
+    AI_THINKING_STRUCT->funcResult = ewram[0x160CC + (index * 2)];
 
     gAIScriptPtr += 2;
 }

@@ -3,6 +3,7 @@
 #include "battle.h"
 #include "berry.h"
 #include "contest.h"
+#include "data2.h"
 #include "decompress.h"
 #include "event_data.h"
 #include "items.h"
@@ -21,9 +22,6 @@
 #define CONTEST_ENTRY_PIC_LEFT 10
 #define CONTEST_ENTRY_PIC_TOP 3
 
-extern const struct SpriteSheet gMonFrontPicTable[];
-extern struct MonCoords gMonFrontPicCoords[];
-
 extern void sub_80C46EC(void);
 extern void sub_80C4740(void);
 extern void sub_80C48F4(void);
@@ -35,7 +33,6 @@ extern void sub_8042044(struct Pokemon *mon, u16, u8);
 extern void sub_8121E10(void);
 extern void sub_8121E34(void);
 
-extern void *gUnknown_081FAF4C[];
 extern struct SpriteTemplate gUnknown_02024E8C;
 extern struct SpritePalette *sub_80409C8(u16, u32, u32);
 
@@ -73,18 +70,18 @@ void sub_80C4C28(void)
 
     switch(specialVar)
     {
-        case 0:
-            var = 3;
-            break;
-        case 1:
-            var = 4;
-            break;
-        case 2:
-            var = 5;
-            break;
-        default:
-            var = 100;
-            break;
+    case 0:
+        var = 3;
+        break;
+    case 1:
+        var = 4;
+        break;
+    case 2:
+        var = 5;
+        break;
+    default:
+        var = 100;
+        break;
     }
     gSpecialVar_0x8004 = var;
 }
@@ -103,24 +100,24 @@ void sub_80C4C78(void)
 
     switch(gScriptContestCategory)
     {
-        case 0:
-            var = 8;
-            break;
-        case 1:
-            var = 9;
-            break;
-        case 2:
-            var = 10;
-            break;
-        case 3:
-            var = 11;
-            break;
-        case 4:
-        default:
-            var = 12;
-            break;
+    case 0:
+        var = 8;
+        break;
+    case 1:
+        var = 9;
+        break;
+    case 2:
+        var = 10;
+        break;
+    case 3:
+        var = 11;
+        break;
+    case 4:
+    default:
+        var = 12;
+        break;
     }
-    
+
     returnVar = gSaveBlock1.sbStruct.unkSB2.sb1_2EFC_struct2[var].var;
 
     if(returnVar == 0)
@@ -436,8 +433,8 @@ void ShowContestEntryMonPic(void)
         taskId = CreateTask(sub_80C5190, 0x50);
         gTasks[taskId].data[0] = 0;
         gTasks[taskId].data[1] = species;
-        HandleLoadSpecialPokePic((struct SpriteSheet *)&gMonFrontPicTable[species].data, 
-        gMonFrontPicCoords[species].x, gMonFrontPicCoords[species].y, 
+        HandleLoadSpecialPokePic((struct SpriteSheet *)&gMonFrontPicTable[species].data,
+        gMonFrontPicCoords[species].coords, gMonFrontPicCoords[species].y_offset,
         (u32)gUnknown_081FAF4C[0], gUnknown_081FAF4C[1], species, var1);
         paletteData = sub_80409C8(species, var2, var1);
         LoadCompressedObjectPalette(paletteData);
@@ -455,7 +452,7 @@ void ShowContestEntryMonPic(void)
 void sub_80C5164(void)
 {
     u8 taskId = FindTaskIdByFunc(sub_80C5190);
-    
+
     if(taskId != 0xFF)
         gTasks[taskId].data[0]++;
 }
@@ -464,29 +461,29 @@ void sub_80C5190(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
     struct Sprite *sprite;
-    
+
     switch(task->data[0])
     {
-        case 2:
-            sprite = &gSprites[task->data[2]];
-            FreeSpritePaletteByTag(GetSpritePaletteTagByPaletteNum(sprite->oam.paletteNum));
+    case 2:
+        sprite = &gSprites[task->data[2]];
+        FreeSpritePaletteByTag(GetSpritePaletteTagByPaletteNum(sprite->oam.paletteNum));
 
-            if(sprite->oam.affineMode)
-                FreeOamMatrix(sprite->oam.matrixNum);
+        if(sprite->oam.affineMode)
+            FreeOamMatrix(sprite->oam.matrixNum);
 
-            DestroySprite(sprite);
-            task->data[0]++;
-            break;
-        case 0:
-            task->data[0]++;
-            break;
-        case 3:
-            MenuZeroFillWindowRect(task->data[3], task->data[4], task->data[3] + 9, task->data[4] + 10);
-            DestroyTask(taskId);
-            break;
-        case 1:
-        default:
-            break;
+        DestroySprite(sprite);
+        task->data[0]++;
+        break;
+    case 0:
+        task->data[0]++;
+        break;
+    case 3:
+        MenuZeroFillWindowRect(task->data[3], task->data[4], task->data[3] + 9, task->data[4] + 10);
+        DestroyTask(taskId);
+        break;
+    case 1:
+    default:
+        break;
     }
 }
 
@@ -531,7 +528,7 @@ void HealPlayerParty(void)
         arg[1] = maxHP >> 8;
         SetMonData(&gPlayerParty[i], MON_DATA_HP, arg);
         ppBonuses = GetMonData(&gPlayerParty[i], MON_DATA_PP_BONUSES);
-        
+
         // restore PP.
         for(j = 0; j < 4; j++)
         {
@@ -563,16 +560,16 @@ u8 ScriptGiveMon(u16 species, u8 var, u16 item, u32 var3, u32 var4, u8 var5)
     nationalSpecies = SpeciesToNationalPokedexNum(species);
 
     // nested if check to fool compiler
-    if(sentToPc < 2)
+    switch(sentToPc)
     {
-        if(sentToPc >= 0)
-        {
-            // set both the seen and caught flags
-            sub_8090D90(nationalSpecies, 2);
-            sub_8090D90(nationalSpecies, 3);
-        }
+        case 0:
+        case 1:
+            GetNationalPokedexFlag(nationalSpecies, 2);
+            GetNationalPokedexFlag(nationalSpecies, 3);
+            return sentToPc;
+        default:
+            return sentToPc;
     }
-    return sentToPc;
 }
 
 u8 ScriptGiveEgg(u16 value)
@@ -583,7 +580,7 @@ u8 ScriptGiveEgg(u16 value)
     sub_8042044(&mon, value, 1);
     data = 1;
     SetMonData(&mon, MON_DATA_IS_EGG, &data);
-    
+
     return GiveMonToPlayer(&mon);
 }
 
@@ -593,22 +590,22 @@ void CheckForAlivePartyMons(void)
 
     switch(var)
     {
-        case 1:
-            gScriptResult = var;
-            break;
-        case 0:
-            gScriptResult = var;
-            break;
-        case 2:
-            gScriptResult = var;
-            break;
+    case 1:
+        gScriptResult = var;
+        break;
+    case 0:
+        gScriptResult = var;
+        break;
+    case 2:
+        gScriptResult = var;
+        break;
     }
 }
 
 bool8 CheckPartyMonHasHeldItem(u16 item)
 {
     int i;
-    
+
     for(i = 0; i < 6; i++)
     {
         u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES2);
@@ -621,7 +618,7 @@ bool8 CheckPartyMonHasHeldItem(u16 item)
 bool8 GetNameOfEnigmaBerryInPlayerParty(void)
 {
     bool8 hasItem = CheckPartyMonHasHeldItem(ITEM_ENIGMA_BERRY);
-    
+
     if(hasItem == TRUE)
         GetBerryNameByBerryType(ItemIdToBerryType(ITEM_ENIGMA_BERRY), gStringVar1);
 
@@ -634,7 +631,7 @@ void ScriptWildBattle(u16 species, u8 level, u16 item)
 
     ZeroEnemyPartyMons();
     CreateMon(&gEnemyParty[0], species, level, 0x20, 0, 0, 0, 0);
-    
+
     if(item)
     {
         data[0] = item;
@@ -647,7 +644,7 @@ void ScriptSetMonMoveSlot(u8 monIndex, u16 move, u8 slot)
 {
     if(monIndex > 6)
         monIndex = gPlayerPartyCount - 1;
-    
+
     SetMonMoveSlot(&gPlayerParty[monIndex], move, slot);
 }
 
@@ -660,17 +657,17 @@ void sub_80C5568(void)
 void sub_80C5580(void)
 {
     u8 var = gSelectedOrderFromParty[0];
-    
+
     switch(var)
     {
-        case 0:
-            gScriptResult = 0;
-            break;
-        default:
-            gScriptResult = 1;
-            break;
+    case 0:
+        gScriptResult = 0;
+        break;
+    default:
+        gScriptResult = 1;
+        break;
     }
-    
+
     SetMainCallback2(c2_exit_to_overworld_1_continue_scripts_restart_music);
 }
 
@@ -683,19 +680,19 @@ void ChooseBattleTowerPlayerParty(void)
 void SetBattleTowerPlayerParty(void)
 {
     u8 var = gSelectedOrderFromParty[0];
-    
+
     switch(var)
     {
-        case 0: // player quit battle tower?
-            LoadPlayerParty();
-            gScriptResult = 0;
-            break;
-        default: // load battle tower.
-            ReducePlayerPartyToThree();
-            gScriptResult = 1;
-            break;
+    case 0: // player quit battle tower?
+        LoadPlayerParty();
+        gScriptResult = 0;
+        break;
+    default: // load battle tower.
+        ReducePlayerPartyToThree();
+        gScriptResult = 1;
+        break;
     }
-    
+
     SetMainCallback2(c2_exit_to_overworld_1_continue_scripts_restart_music);
 }
 

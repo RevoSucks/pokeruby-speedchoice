@@ -5,375 +5,6 @@
 	.syntax unified
 
 	.text
-	
-	thumb_func_start sub_810D6A4
-sub_810D6A4: @ 810D6A4
-	push {lr}
-	ldr r0, _0810D6B4 @ =sub_8145D88
-	bl SetMainCallback2
-	bl ScriptContext2_Enable
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0810D6B4: .4byte sub_8145D88
-	thumb_func_end sub_810D6A4
-
-	thumb_func_start sub_810D6B8
-sub_810D6B8: @ 810D6B8
-	push {lr}
-	ldr r0, _0810D6D0 @ =gMain
-	ldr r1, _0810D6D4 @ =c2_exit_to_overworld_2_switch
-	str r1, [r0, 0x8]
-	ldr r0, _0810D6D8 @ =CB2_ViewWallClock
-	bl SetMainCallback2
-	bl ScriptContext2_Enable
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0810D6D0: .4byte gMain
-_0810D6D4: .4byte c2_exit_to_overworld_2_switch
-_0810D6D8: .4byte CB2_ViewWallClock
-	thumb_func_end sub_810D6B8
-
-	thumb_func_start ResetCyclingRoadChallengeData
-ResetCyclingRoadChallengeData: @ 810D6DC
-	ldr r0, _0810D6F0 @ =gUnknown_02039250
-	movs r1, 0
-	strb r1, [r0]
-	ldr r0, _0810D6F4 @ =gUnknown_02039251
-	strb r1, [r0]
-	ldr r1, _0810D6F8 @ =gUnknown_02039254
-	movs r0, 0
-	str r0, [r1]
-	bx lr
-	.align 2, 0
-_0810D6F0: .4byte gUnknown_02039250
-_0810D6F4: .4byte gUnknown_02039251
-_0810D6F8: .4byte gUnknown_02039254
-	thumb_func_end ResetCyclingRoadChallengeData
-
-	thumb_func_start BeginCyclingRoadChallenge
-BeginCyclingRoadChallenge: @ 810D6FC
-	ldr r1, _0810D714 @ =gUnknown_02039250
-	movs r0, 0x1
-	strb r0, [r1]
-	ldr r1, _0810D718 @ =gUnknown_02039251
-	movs r0, 0
-	strb r0, [r1]
-	ldr r1, _0810D71C @ =gUnknown_02039254
-	ldr r0, _0810D720 @ =gMain
-	ldr r0, [r0, 0x20]
-	str r0, [r1]
-	bx lr
-	.align 2, 0
-_0810D714: .4byte gUnknown_02039250
-_0810D718: .4byte gUnknown_02039251
-_0810D71C: .4byte gUnknown_02039254
-_0810D720: .4byte gMain
-	thumb_func_end BeginCyclingRoadChallenge
-
-	thumb_func_start GetPlayerAvatarBike
-GetPlayerAvatarBike: @ 810D724
-	push {lr}
-	movs r0, 0x4
-	bl TestPlayerAvatarFlags
-	lsls r0, 24
-	cmp r0, 0
-	beq _0810D736
-	movs r0, 0x1
-	b _0810D748
-_0810D736:
-	movs r0, 0x2
-	bl TestPlayerAvatarFlags
-	lsls r0, 24
-	cmp r0, 0
-	bne _0810D746
-	movs r0, 0
-	b _0810D748
-_0810D746:
-	movs r0, 0x2
-_0810D748:
-	pop {r1}
-	bx r1
-	thumb_func_end GetPlayerAvatarBike
-
-	thumb_func_start DetermineCyclingRoadResults
-DetermineCyclingRoadResults: @ 810D74C
-	push {r4-r7,lr}
-	adds r7, r0, 0
-	lsls r1, 24
-	lsrs r6, r1, 24
-	cmp r6, 0x63
-	bhi _0810D778
-	ldr r4, _0810D770 @ =gStringVar1
-	adds r0, r4, 0
-	adds r1, r6, 0
-	movs r2, 0
-	movs r3, 0x2
-	bl ConvertIntToDecimalStringN
-	ldr r1, _0810D774 @ =gOtherText_Times
-	adds r0, r4, 0
-	bl StringAppend
-	b _0810D780
-	.align 2, 0
-_0810D770: .4byte gStringVar1
-_0810D774: .4byte gOtherText_Times
-_0810D778:
-	ldr r0, _0810D7CC @ =gStringVar1
-	ldr r1, _0810D7D0 @ =gOtherText_99Times
-	bl StringCopy
-_0810D780:
-	ldr r0, _0810D7D4 @ =0x00000e0f
-	cmp r7, r0
-	bhi _0810D7E0
-	ldr r4, _0810D7D8 @ =gStringVar2
-	adds r0, r7, 0
-	movs r1, 0x3C
-	bl __udivsi3
-	adds r1, r0, 0
-	adds r0, r4, 0
-	movs r2, 0x1
-	movs r3, 0x2
-	bl ConvertIntToDecimalStringN
-	movs r0, 0xAD
-	strb r0, [r4, 0x2]
-	adds r5, r4, 0x3
-	adds r0, r7, 0
-	movs r1, 0x3C
-	bl __umodsi3
-	movs r1, 0x64
-	muls r0, r1
-	movs r1, 0x3C
-	bl __udivsi3
-	adds r1, r0, 0
-	adds r0, r5, 0
-	movs r2, 0x2
-	movs r3, 0x2
-	bl ConvertIntToDecimalStringN
-	ldr r1, _0810D7DC @ =gOtherText_Seconds
-	adds r0, r4, 0
-	bl StringAppend
-	b _0810D7E8
-	.align 2, 0
-_0810D7CC: .4byte gStringVar1
-_0810D7D0: .4byte gOtherText_99Times
-_0810D7D4: .4byte 0x00000e0f
-_0810D7D8: .4byte gStringVar2
-_0810D7DC: .4byte gOtherText_Seconds
-_0810D7E0:
-	ldr r0, _0810D7F4 @ =gStringVar2
-	ldr r1, _0810D7F8 @ =gOtherText_1Minute
-	bl StringCopy
-_0810D7E8:
-	movs r4, 0
-	cmp r6, 0
-	bne _0810D7FC
-	movs r4, 0x5
-	b _0810D81A
-	.align 2, 0
-_0810D7F4: .4byte gStringVar2
-_0810D7F8: .4byte gOtherText_1Minute
-_0810D7FC:
-	cmp r6, 0x3
-	bhi _0810D804
-	movs r4, 0x4
-	b _0810D81A
-_0810D804:
-	cmp r6, 0x9
-	bhi _0810D80C
-	movs r4, 0x3
-	b _0810D81A
-_0810D80C:
-	cmp r6, 0x13
-	bhi _0810D814
-	movs r4, 0x2
-	b _0810D81A
-_0810D814:
-	cmp r6, 0x63
-	bhi _0810D81A
-	movs r4, 0x1
-_0810D81A:
-	adds r0, r7, 0
-	movs r1, 0x3C
-	bl __udivsi3
-	cmp r0, 0xA
-	bhi _0810D82A
-	adds r0, r4, 0x5
-	b _0810D848
-_0810D82A:
-	cmp r0, 0xF
-	bhi _0810D832
-	adds r0, r4, 0x4
-	b _0810D848
-_0810D832:
-	cmp r0, 0x14
-	bhi _0810D83A
-	adds r0, r4, 0x3
-	b _0810D848
-_0810D83A:
-	cmp r0, 0x28
-	bhi _0810D842
-	adds r0, r4, 0x2
-	b _0810D848
-_0810D842:
-	cmp r0, 0x3B
-	bhi _0810D84C
-	adds r0, r4, 0x1
-_0810D848:
-	lsls r0, 24
-	lsrs r4, r0, 24
-_0810D84C:
-	ldr r0, _0810D858 @ =gScriptResult
-	strh r4, [r0]
-	pop {r4-r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0810D858: .4byte gScriptResult
-	thumb_func_end DetermineCyclingRoadResults
-
-	thumb_func_start FinishCyclingRoadChallenge
-FinishCyclingRoadChallenge: @ 810D85C
-	push {r4,r5,lr}
-	ldr r0, _0810D880 @ =gMain
-	ldr r1, _0810D884 @ =gUnknown_02039254
-	ldr r4, [r0, 0x20]
-	ldr r0, [r1]
-	subs r4, r0
-	ldr r5, _0810D888 @ =gUnknown_02039251
-	ldrb r1, [r5]
-	adds r0, r4, 0
-	bl DetermineCyclingRoadResults
-	ldrb r1, [r5]
-	adds r0, r4, 0
-	bl RecordCyclingRoadResults
-	pop {r4,r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0810D880: .4byte gMain
-_0810D884: .4byte gUnknown_02039254
-_0810D888: .4byte gUnknown_02039251
-	thumb_func_end FinishCyclingRoadChallenge
-
-	thumb_func_start RecordCyclingRoadResults
-RecordCyclingRoadResults: @ 810D88C
-	push {r4-r7,lr}
-	mov r7, r8
-	push {r7}
-	adds r5, r0, 0
-	lsls r1, 24
-	lsrs r1, 24
-	mov r8, r1
-	ldr r6, _0810D8E0 @ =0x00004028
-	adds r0, r6, 0
-	bl VarGet
-	adds r4, r0, 0
-	lsls r4, 16
-	lsrs r4, 16
-	ldr r7, _0810D8E4 @ =0x00004029
-	adds r0, r7, 0
-	bl VarGet
-	lsls r0, 16
-	adds r4, r0
-	cmp r4, r5
-	bhi _0810D8BC
-	cmp r4, 0
-	bne _0810D8D6
-_0810D8BC:
-	lsls r1, r5, 16
-	lsrs r1, 16
-	adds r0, r6, 0
-	bl VarSet
-	lsrs r1, r5, 16
-	adds r0, r7, 0
-	bl VarSet
-	ldr r0, _0810D8E8 @ =0x00004027
-	mov r1, r8
-	bl VarSet
-_0810D8D6:
-	pop {r3}
-	mov r8, r3
-	pop {r4-r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0810D8E0: .4byte 0x00004028
-_0810D8E4: .4byte 0x00004029
-_0810D8E8: .4byte 0x00004027
-	thumb_func_end RecordCyclingRoadResults
-
-	thumb_func_start GetRecordedCyclingRoadResults
-GetRecordedCyclingRoadResults: @ 810D8EC
-	push {r4,lr}
-	ldr r0, _0810D920 @ =0x00004028
-	bl VarGet
-	adds r4, r0, 0
-	lsls r4, 16
-	lsrs r4, 16
-	ldr r0, _0810D924 @ =0x00004029
-	bl VarGet
-	lsls r0, 16
-	adds r4, r0
-	cmp r4, 0
-	beq _0810D92C
-	ldr r0, _0810D928 @ =0x00004027
-	bl VarGet
-	adds r1, r0, 0
-	lsls r1, 24
-	lsrs r1, 24
-	adds r0, r4, 0
-	bl DetermineCyclingRoadResults
-	movs r0, 0x1
-	b _0810D92E
-	.align 2, 0
-_0810D920: .4byte 0x00004028
-_0810D924: .4byte 0x00004029
-_0810D928: .4byte 0x00004027
-_0810D92C:
-	movs r0, 0
-_0810D92E:
-	pop {r4}
-	pop {r1}
-	bx r1
-	thumb_func_end GetRecordedCyclingRoadResults
-
-	thumb_func_start UpdateCyclingRoadState
-UpdateCyclingRoadState: @ 810D934
-	push {r4,lr}
-	ldr r0, _0810D974 @ =gUnknown_020297F0
-	ldrh r1, [r0]
-	ldr r0, _0810D978 @ =0x00000c1d
-	cmp r1, r0
-	beq _0810D96C
-	ldr r4, _0810D97C @ =0x000040a9
-	adds r0, r4, 0
-	bl VarGet
-	lsls r0, 16
-	lsrs r0, 16
-	cmp r0, 0x2
-	beq _0810D95E
-	adds r0, r4, 0
-	bl VarGet
-	lsls r0, 16
-	lsrs r0, 16
-	cmp r0, 0x3
-	bne _0810D96C
-_0810D95E:
-	adds r0, r4, 0
-	movs r1, 0
-	bl VarSet
-	movs r0, 0
-	bl sav1_set_battle_music_maybe
-_0810D96C:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0810D974: .4byte gUnknown_020297F0
-_0810D978: .4byte 0x00000c1d
-_0810D97C: .4byte 0x000040a9
-	thumb_func_end UpdateCyclingRoadState
 
 	thumb_func_start SetSSTidalFlag
 SetSSTidalFlag: @ 810D980
@@ -402,8 +33,8 @@ ResetSSTidalFlag: @ 810D9A0
 _0810D9AC: .4byte 0x0000082d
 	thumb_func_end ResetSSTidalFlag
 
-	thumb_func_start sub_810D9B0
-sub_810D9B0: @ 810D9B0
+	thumb_func_start CountSSTidalStep
+CountSSTidalStep: @ 810D9B0
 	push {r4,lr}
 	lsls r0, 16
 	lsrs r4, r0, 16
@@ -433,10 +64,10 @@ _0810D9E6:
 	pop {r4}
 	pop {r1}
 	bx r1
-	thumb_func_end sub_810D9B0
+	thumb_func_end CountSSTidalStep
 
-	thumb_func_start sub_810D9EC
-sub_810D9EC: @ 810D9EC
+	thumb_func_start GetSSTidalLocation
+GetSSTidalLocation: @ 810D9EC
 	push {r4-r7,lr}
 	mov r7, r8
 	push {r7}
@@ -548,7 +179,7 @@ _0810DABE:
 	pop {r4-r7}
 	pop {r1}
 	bx r1
-	thumb_func_end sub_810D9EC
+	thumb_func_end GetSSTidalLocation
 
 	thumb_func_start GetLinkPartnerNames
 GetLinkPartnerNames: @ 810DAC8
@@ -600,8 +231,8 @@ _0810DB20: .4byte gUnknown_083D1464
 _0810DB24: .4byte gLinkPlayers + 0x8
 	thumb_func_end GetLinkPartnerNames
 
-	thumb_func_start sub_810DB28
-sub_810DB28: @ 810DB28
+	thumb_func_start SpawnBerryBlenderLinkPlayerSprites
+SpawnBerryBlenderLinkPlayerSprites: @ 810DB28
 	push {r4-r7,lr}
 	mov r7, r10
 	mov r6, r9
@@ -772,10 +403,10 @@ _0810DC5C:
 	.align 2, 0
 _0810DC74: .4byte gLinkPlayers
 _0810DC78: .4byte gSpecialVar_0x8004
-	thumb_func_end sub_810DB28
+	thumb_func_end SpawnBerryBlenderLinkPlayerSprites
 
-	thumb_func_start sub_810DC7C
-sub_810DC7C: @ 810DC7C
+	thumb_func_start MauvilleGymSpecial1
+MauvilleGymSpecial1: @ 810DC7C
 	push {r4,r5,lr}
 	movs r4, 0
 	ldr r5, _0810DC9C @ =gUnknown_083F8364
@@ -813,10 +444,10 @@ _0810DCB6:
 	bx r0
 	.align 2, 0
 _0810DCC8: .4byte 0x00000205
-	thumb_func_end sub_810DC7C
+	thumb_func_end MauvilleGymSpecial1
 
-	thumb_func_start sub_810DCCC
-sub_810DCCC: @ 810DCCC
+	thumb_func_start MauvilleGymSpecial2
+MauvilleGymSpecial2: @ 810DCCC
 	push {r4-r6,lr}
 	movs r5, 0xC
 _0810DCD0:
@@ -1050,10 +681,10 @@ _0810DED0:
 	bx r0
 	.align 2, 0
 _0810DED8: .4byte 0x00000251
-	thumb_func_end sub_810DCCC
+	thumb_func_end MauvilleGymSpecial2
 
-	thumb_func_start sub_810DEDC
-sub_810DEDC: @ 810DEDC
+	thumb_func_start MauvilleGymSpecial3
+MauvilleGymSpecial3: @ 810DEDC
 	push {r4-r6,lr}
 	ldr r4, _0810DF18 @ =gUnknown_083F8364
 	movs r5, 0x2
@@ -1219,10 +850,10 @@ _0810E066:
 	bx r0
 	.align 2, 0
 _0810E06C: .4byte 0x00000251
-	thumb_func_end sub_810DEDC
+	thumb_func_end MauvilleGymSpecial3
 
-	thumb_func_start sub_810E070
-sub_810E070: @ 810E070
+	thumb_func_start PetalburgGymSpecial1
+PetalburgGymSpecial1: @ 810E070
 	push {lr}
 	ldr r0, _0810E090 @ =gUnknown_02039258
 	movs r1, 0
@@ -1231,7 +862,7 @@ sub_810E070: @ 810E070
 	strb r1, [r0]
 	movs r0, 0x2C
 	bl PlaySE
-	ldr r0, _0810E098 @ =sub_810E09C
+	ldr r0, _0810E098 @ =Task_PetalburgGym
 	movs r1, 0x8
 	bl CreateTask
 	pop {r0}
@@ -1239,11 +870,11 @@ sub_810E070: @ 810E070
 	.align 2, 0
 _0810E090: .4byte gUnknown_02039258
 _0810E094: .4byte gUnknown_02039259
-_0810E098: .4byte sub_810E09C
-	thumb_func_end sub_810E070
+_0810E098: .4byte Task_PetalburgGym
+	thumb_func_end PetalburgGymSpecial1
 
-	thumb_func_start sub_810E09C
-sub_810E09C: @ 810E09C
+	thumb_func_start Task_PetalburgGym
+Task_PetalburgGym: @ 810E09C
 	push {r4-r6,lr}
 	lsls r0, 24
 	lsrs r6, r0, 24
@@ -1262,7 +893,7 @@ sub_810E09C: @ 810E09C
 	lsls r1, 1
 	adds r1, r2
 	ldrh r1, [r1]
-	bl sub_810E104
+	bl PetalburgGymFunc
 	movs r0, 0
 	strb r0, [r4]
 	ldrb r0, [r5]
@@ -1289,10 +920,10 @@ _0810E0FC:
 	pop {r4-r6}
 	pop {r0}
 	bx r0
-	thumb_func_end sub_810E09C
+	thumb_func_end Task_PetalburgGym
 
-	thumb_func_start sub_810E104
-sub_810E104: @ 810E104
+	thumb_func_start PetalburgGymFunc
+PetalburgGymFunc: @ 810E104
 	push {r4-r7,lr}
 	mov r7, r9
 	mov r6, r8
@@ -1447,22 +1078,22 @@ _0810E21E:
 	pop {r4-r7}
 	pop {r0}
 	bx r0
-	thumb_func_end sub_810E104
+	thumb_func_end PetalburgGymFunc
 
-	thumb_func_start sub_810E230
-sub_810E230: @ 810E230
+	thumb_func_start PetalburgGymSpecial2
+PetalburgGymSpecial2: @ 810E230
 	push {lr}
 	ldr r0, _0810E244 @ =gSpecialVar_0x8004
 	ldrb r0, [r0]
 	ldr r1, _0810E248 @ =gUnknown_083F8376
 	ldrh r1, [r1, 0x8]
-	bl sub_810E104
+	bl PetalburgGymFunc
 	pop {r0}
 	bx r0
 	.align 2, 0
 _0810E244: .4byte gSpecialVar_0x8004
 _0810E248: .4byte gUnknown_083F8376
-	thumb_func_end sub_810E230
+	thumb_func_end PetalburgGymSpecial2
 
 	thumb_func_start ShowFieldMessageStringVar4
 ShowFieldMessageStringVar4: @ 810E24C
@@ -3455,7 +3086,7 @@ _0810F17A:
 	ands r0, r1
 	cmp r0, 0
 	beq _0810F1AE
-	bl sub_8072DEC
+	bl HandleDestroyMenuCursors
 	ldr r0, _0810F1F0 @ =gScriptResult
 	ldr r1, _0810F1E8 @ =gUnknown_0203925B
 	ldrb r1, [r1]
@@ -3476,7 +3107,7 @@ _0810F1AE:
 	ands r0, r1
 	cmp r0, 0
 	beq _0810F1DE
-	bl sub_8072DEC
+	bl HandleDestroyMenuCursors
 	ldr r1, _0810F1F0 @ =gScriptResult
 	movs r0, 0x7F
 	strh r0, [r1]
@@ -4064,8 +3695,8 @@ _0810F612:
 	bx r1
 	thumb_func_end sub_810F5BC
 
-	thumb_func_start sub_810F618
-sub_810F618: @ 810F618
+	thumb_func_start SetShoalItemFlag
+SetShoalItemFlag: @ 810F618
 	push {lr}
 	ldr r0, _0810F624 @ =0x0000085f
 	bl FlagSet
@@ -4073,7 +3704,7 @@ sub_810F618: @ 810F618
 	bx r0
 	.align 2, 0
 _0810F624: .4byte 0x0000085f
-	thumb_func_end sub_810F618
+	thumb_func_end SetShoalItemFlag
 
 	thumb_func_start PutZigzagoonInPlayerParty
 PutZigzagoonInPlayerParty: @ 810F628
@@ -4639,8 +4270,8 @@ _0810FA4A:
 _0810FA50: .4byte gStringVar1
 	thumb_func_end sub_810F9AC
 
-	thumb_func_start sub_810FA54
-sub_810FA54: @ 810FA54
+	thumb_func_start ResetFanClub
+ResetFanClub: @ 810FA54
 	ldr r0, _0810FA68 @ =gSaveBlock1
 	ldr r2, _0810FA6C @ =0x000013c2
 	adds r1, r0, r2
@@ -4654,7 +4285,7 @@ sub_810FA54: @ 810FA54
 _0810FA68: .4byte gSaveBlock1
 _0810FA6C: .4byte 0x000013c2
 _0810FA70: .4byte 0x000013c4
-	thumb_func_end sub_810FA54
+	thumb_func_end ResetFanClub
 
 	thumb_func_start sub_810FA74
 sub_810FA74: @ 810FA74

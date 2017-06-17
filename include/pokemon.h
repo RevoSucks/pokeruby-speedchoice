@@ -65,7 +65,7 @@
 #define MON_DATA_SPD               61
 #define MON_DATA_SPATK             62
 #define MON_DATA_SPDEF             63
-#define MON_DATA_64                64
+#define MON_DATA_MAIL              64
 #define MON_DATA_SPECIES2          65
 #define MON_DATA_IVS               66
 #define MON_DATA_CHAMPION_RIBBON   67
@@ -115,6 +115,9 @@
 #define TYPE_DARK     0x11
 
 #define PARTY_SIZE 6
+#define MAX_TOTAL_EVS 510
+#define NUM_STATS 6
+#define UNOWN_FORM_COUNT 28
 
 enum {
     NATURE_HARDY,
@@ -250,7 +253,7 @@ struct Pokemon
     struct BoxPokemon box;
     u32 status;
     u8 level;
-    u8 pokerus;
+    u8 mail;
     u16 hp;
     u16 maxHP;
     u16 attack;
@@ -354,7 +357,8 @@ struct BaseStats
  /* 0x16 */ u8 ability1;
  /* 0x17 */ u8 ability2;
  /* 0x18 */ u8 safariZoneFleeRate;
- /* 0x19 */ u8 bodyColor;
+ /* 0x19 */ u8 bodyColor:7;
+            u8 unk19_7:1;
 };
 
 struct BattleMove
@@ -468,8 +472,9 @@ u8 GetNatureFromPersonality(u32 personality);
 
 u16 nature_stat_mod(u8 nature, u16 n, u8 statIndex);
 
-void sub_8040B1C(void *);
+void MonRestorePP(struct Pokemon *);
 
 u8 *sub_803F378(u16 itemId);
 
+u16 NationalPokedexNumToSpecies(u16 nationalNum);
 #endif // GUARD_POKEMON_H

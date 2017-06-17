@@ -9,6 +9,7 @@
 #include "pokedex.h"
 #include "pokemon_size_record.h"
 #include "rng.h"
+#include "roamer.h"
 #include "rom4.h"
 #include "rtc.h"
 #include "script.h"
@@ -24,7 +25,7 @@ extern u8 gUnknown_0819FA81[];
 const struct SB1_2EFC_Struct gUnknown_08216604 =
 {
     0x0000,
-	{
+    {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -46,7 +47,7 @@ void copy_word_to_mem(u8 *copyTo, u8 *copyFrom)
         copyTo[i] = copyFrom[i];
 }
 
-void set_player_trainer_id(void)
+void InitPlayerTrainerId(void)
 {
     write_word_to_mem((Random() << 16) | Random(), gSaveBlock2.playerTrainerId);
 }
@@ -112,21 +113,21 @@ void NewGameInitData(void)
     gDifferentSaveFile = 1;
     ZeroPlayerPartyMons();
     ZeroEnemyPartyMons();
-    sub_808C02C();
+    ResetPokedex();
     sub_8052DE4();
     memset(&gSaveBlock1, 0, sizeof(gSaveBlock1));
-    sub_80A2B18();
+    ClearMailData();
     gSaveBlock2.specialSaveWarp = 0;
-    set_player_trainer_id();
+    InitPlayerTrainerId();
     PlayTimeCounter_Reset();
     ClearPokedexFlags();
     InitEventData();
-    sub_80BD7A8();
-    sub_80BDAB4();
-    sub_80BB5B4();
+    ClearTVShowData();
+    ResetGabbyAndTy();
+    ResetSecretBases();
     ClearBerryTrees();
     gSaveBlock1.money = 3000;
-    sub_80AB1B0();
+    ResetLinkContestBoolean();
     ResetGameStats();
     sub_8052DA8();
     InitLinkBattleRecords();
@@ -134,18 +135,18 @@ void NewGameInitData(void)
     InitBarboachSizeRecord();
     gPlayerPartyCount = 0;
     ZeroPlayerPartyMons();
-    sub_80961D8();
-    sub_81341F8();
-    sub_813420C();
+    ResetPokemonStorageSystem();
+    ClearRoamerData();
+    ClearRoamerLocationData();
     gSaveBlock1.registeredItem = 0;
-    sub_80A3714();
+    ClearBag();
     NewGameInitPCItems();
-    sub_810C994();
-    sub_8133F80();
-    sub_80E6764();
+    ClearPokeblocks();
+    ClearDecorationInventories();
+    InitEasyChatPhrases();
     SetMauvilleOldMan();
-    sub_80FA17C();
-    sub_810FA54();
+    InitDewfordTrend();
+    ResetFanClub();
     ResetLotteryCorner();
     WarpToTruck();
     ScriptContext2_RunNewScript(gUnknown_0819FA81);

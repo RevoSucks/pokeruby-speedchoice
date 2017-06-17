@@ -5,8 +5,20 @@
 
 struct MenuAction
 {
-   u8 *text;
+   const u8 *text;
    u8 (*func)();
+};
+
+struct MenuAction2
+{
+    const u8 *text;
+    void (*func)(u8);
+};
+
+struct MenuAction3
+{
+    void (*func1)(u8);
+    void (*func2)(u8);
 };
 
 void CloseMenu(void);
@@ -23,7 +35,7 @@ void MenuZeroFillWindowRect(u8, u8, u8, u8);
 void MenuFillWindowRectWithBlankTile(u8, u8, u8, u8);
 void MenuZeroFillScreen(void);
 void MenuDrawTextWindow(u8, u8, u8, u8);
-void sub_8071F40(u8 *);
+void sub_8071F40(const u8 *);
 void sub_8071F60(u8, u8, u8, u8);
 u16 unref_sub_8071F98(u8, u8);
 void unref_sub_8071FBC(u16, u8, u8, u8, u8);
@@ -49,17 +61,17 @@ void PrintMenuItemsReordered(u8, u8, u8, const struct MenuAction[], u8*);
 void InitYesNoMenu(u8, u8, u8);
 void DisplayYesNoMenu(u8, u8, u32);
 s8 ProcessMenuInputNoWrap_(void);
-u8 MenuPrint_PixelCoords(u8 *, u8, u16, u8);
-u8 sub_8072A18(u8 *, u8, u16, u8, u32);
+u8 MenuPrint_PixelCoords(const u8 *, u8, u16, u8);
+u8 sub_8072A18(const u8 *, u8, u16, u8, u32);
 u8 unref_sub_8072A5C(u8 *, u8 *, u8, u16, u8, u32);
-int sub_8072AB0(u8 *, u8, u16, u8, u8, u32);
+int sub_8072AB0(const u8 *, u8, u16, u8, u8, u32);
 void MenuPrint_RightAligned(u8 *, u8, u8);
-void sub_8072B80(u8 *, u8, u8, u8 *);
-void sub_8072BD8(u8 *, u8, u8, u16);
+void sub_8072B80(const u8 *, u8, u8, const u8 *);
+void sub_8072BD8(const u8 *, u8, u8, u16);
 u8 *sub_8072C14(u8 *, s32, u8, u8);
 u8 *sub_8072C44(u8 *, s32, u8, u8);
 u8 *sub_8072C74(u8 *, const u8 *, u8, u8);
-u8 sub_8072CA4(u8 *s);
+u8 sub_8072CA4(const u8 *s);
 u8 sub_8072CBC(void);
 void sub_8072CD4(u8 *, u8 *, u8 *);
 u32 MenuUpdateWindowText_OverrideLineLength(u8);
@@ -69,6 +81,6 @@ void RedrawMenuCursor(u8, u8);
 void unref_sub_8072DC0(void);
 void sub_8072DCC(u8);
 void sub_8072DDC(u8);
-void sub_8072DEC(void);
+void HandleDestroyMenuCursors(void);
 
 #endif // GUARD_MENU_H

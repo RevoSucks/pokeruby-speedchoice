@@ -1,6 +1,7 @@
 #include "global.h"
 #include "starter_choose.h"
 #include "asm.h"
+#include "data2.h"
 #include "decompress.h"
 #include "main.h"
 #include "menu.h"
@@ -11,23 +12,11 @@
 #include "species.h"
 #include "sprite.h"
 #include "string_util.h"
+#include "strings.h"
 #include "task.h"
 #include "trig.h"
 
-struct MonCoords
-{
-    u8 x, y;
-};
-
-extern void * const gUnknown_081FAF4C[];
-extern const u8 gOtherText_DoYouChoosePoke[];
 extern u16 gScriptResult;
-extern const u8 gSpeciesNames[][11];
-extern const u8 gOtherText_Poke[];
-extern const struct SpriteSheet gMonFrontPicTable[];
-extern const struct MonCoords gMonFrontPicCoords[];
-extern const struct SpritePalette gMonPaletteTable[];
-extern const u8 gOtherText_BirchInTrouble[];
 extern struct SpriteTemplate gUnknown_02024E8C;
 
 //--------------------------------------------------
@@ -325,9 +314,9 @@ void CB2_ChooseStarter(void)
     REG_BLDCNT = 0xFE;
     REG_BLDALPHA = 0;
     REG_BLDY = 0x7;
-    REG_BG3CNT = 0x703;
-    REG_BG2CNT = 0x602;
-    REG_BG0CNT = 0x1F08;
+    REG_BG3CNT = BGCNT_PRIORITY(3) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(7)  | BGCNT_16COLOR | BGCNT_TXT256x256;
+    REG_BG2CNT = BGCNT_PRIORITY(2) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(6)  | BGCNT_16COLOR | BGCNT_TXT256x256;
+    REG_BG0CNT = BGCNT_PRIORITY(0) | BGCNT_CHARBASE(2) | BGCNT_SCREENBASE(31) | BGCNT_16COLOR | BGCNT_TXT256x256;
     REG_DISPCNT = DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_BG0_ON | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON;
 
     taskId = CreateTask(Task_StarterChoose1, 0);
@@ -448,26 +437,26 @@ static void Task_StarterChoose5(u8 taskId)
 
     switch (ProcessMenuInputNoWrap_())
     {
-        case 0:  // YES
-            //Return the starter choice and exit.
-            gScriptResult = gTasks[taskId].tStarterSelection;
-            SetMainCallback2(gMain.savedCallback);
-            break;
-        case 1:  // NO
-        case -1: // B button
-            PlaySE(SE_SELECT);
-            MenuZeroFillWindowRect(21, 7, 27, 12);
+    case 0:  // YES
+        //Return the starter choice and exit.
+        gScriptResult = gTasks[taskId].tStarterSelection;
+        SetMainCallback2(gMain.savedCallback);
+        break;
+    case 1:  // NO
+    case -1: // B button
+        PlaySE(SE_SELECT);
+        MenuZeroFillWindowRect(21, 7, 27, 12);
 
-            spriteId = gTasks[taskId].tPkmnSpriteId;
-            FreeSpritePaletteByTag(GetSpritePaletteTagByPaletteNum(gSprites[spriteId].oam.paletteNum));
-            FreeOamMatrix(gSprites[spriteId].oam.matrixNum);
-            DestroySprite(&gSprites[spriteId]);
+        spriteId = gTasks[taskId].tPkmnSpriteId;
+        FreeSpritePaletteByTag(GetSpritePaletteTagByPaletteNum(gSprites[spriteId].oam.paletteNum));
+        FreeOamMatrix(gSprites[spriteId].oam.matrixNum);
+        DestroySprite(&gSprites[spriteId]);
 
-            spriteId = gTasks[taskId].tCircleSpriteId;
-            FreeOamMatrix(gSprites[spriteId].oam.matrixNum);
-            DestroySprite(&gSprites[spriteId]);
-            gTasks[taskId].func = Task_StarterChoose6;
-            break;
+        spriteId = gTasks[taskId].tCircleSpriteId;
+        FreeOamMatrix(gSprites[spriteId].oam.matrixNum);
+        DestroySprite(&gSprites[spriteId]);
+        gTasks[taskId].func = Task_StarterChoose6;
+        break;
     }
 }
 
@@ -494,7 +483,7 @@ static void AddTextColorCtrlCode(u8 *string, u8 bgColor, u8 textColor, u8 shadow
 static void CreateStarterPokemonLabel(u8 prevSelection, u8 selection)
 {
     u8 labelText[72];
-    u8 *category;
+    const u8 *category;
     u8 srcIndex;
     u8 dstIndex;
     u16 species;
@@ -567,7 +556,7 @@ static u8 CreatePokemonFrontSprite(u16 species, u8 x, u8 y)
 
     DecompressPicFromTable_2(
       &gMonFrontPicTable[species],
-      gMonFrontPicCoords[species].x, gMonFrontPicCoords[species].y,
+      gMonFrontPicCoords[species].coords, gMonFrontPicCoords[species].y_offset,
       gUnknown_081FAF4C[0], gUnknown_081FAF4C[1],
       species);
     LoadCompressedObjectPalette(&gMonPaletteTable[species]);

@@ -16,10 +16,10 @@
 // porthole states
 enum
 {
-	INIT_PORTHOLE,
-	IDLE_CHECK,
-	EXECUTE_MOVEMENT,
-	EXIT_PORTHOLE,
+    INIT_PORTHOLE,
+    IDLE_CHECK,
+    EXECUTE_MOVEMENT,
+    EXIT_PORTHOLE,
 };
 
 extern s8 gTruckCamera_HorizontalTable[];
@@ -143,64 +143,64 @@ void Task_HandleTruckSequence(u8 taskId)
 {
    s16 *data = gTasks[taskId].data;
 
-   switch (data[0])
-   {
-       /*
-       Each case has a timer which is handled with data[1], incrementing
-       until it reaches the if function's condition, which sets the next task up.
-       */
-   case 0:
-       data[1]++;
-       if (data[1] == SECONDS(1.5))
-       {
-           SetCameraPanningCallback(0);
-           data[1] = 0; // reset the timer.
-           data[2] = CreateTask(Task_Truck1, 0xA);
-           data[0] = 1; // run the next case.
-           PlaySE(SE_TRACK_MOVE);
-       }
-       break;
-   case 1:
-       data[1]++;
-       if (data[1] == SECONDS(2.5))
-       {
-           pal_fill_black();
-           data[1] = 0;
-           data[0] = 2;
-       }
-       break;
-   case 2:
-       data[1]++;
-       if (!gPaletteFade.active && data[1] > SECONDS(5))
-       {
-           data[1] = 0;
-           DestroyTask(data[2]);
-           data[3] = CreateTask(Task_Truck2, 0xA);
-           data[0] = 3;
-           PlaySE(SE_TRACK_STOP);
-       }
-       break;
-   case 3:
-       if (!gTasks[data[3]].isActive) // is Truck2 no longer active (is Truck3 active?)
-       {
-           InstallCameraPanAheadCallback();
-           data[1] = 0;
-           data[0] = 4;
-       }
-       break;
-   case 4:
-       data[1]++;
-       if (data[1] == 90)
-       {
-           PlaySE(SE_TRACK_HAIK);
-           data[1] = 0;
-           data[0] = 5;
-       }
-       break;
-   case 5:
-       data[1]++;
-       if (data[1] == 120)
-       {
+    switch (data[0])
+    {
+        /*
+        Each case has a timer which is handled with data[1], incrementing
+        until it reaches the if function's condition, which sets the next task up.
+        */
+    case 0:
+        data[1]++;
+        if (data[1] == SECONDS(1.5))
+        {
+            SetCameraPanningCallback(0);
+            data[1] = 0; // reset the timer.
+            data[2] = CreateTask(Task_Truck1, 0xA);
+            data[0] = 1; // run the next case.
+            PlaySE(SE_TRACK_MOVE);
+        }
+        break;
+    case 1:
+        data[1]++;
+        if (data[1] == SECONDS(2.5))
+        {
+            pal_fill_black();
+            data[1] = 0;
+            data[0] = 2;
+        }
+        break;
+    case 2:
+        data[1]++;
+        if (!gPaletteFade.active && data[1] > SECONDS(5))
+        {
+            data[1] = 0;
+            DestroyTask(data[2]);
+            data[3] = CreateTask(Task_Truck2, 0xA);
+            data[0] = 3;
+            PlaySE(SE_TRACK_STOP);
+        }
+        break;
+    case 3:
+        if (!gTasks[data[3]].isActive) // is Truck2 no longer active (is Truck3 active?)
+        {
+            InstallCameraPanAheadCallback();
+            data[1] = 0;
+            data[0] = 4;
+        }
+        break;
+    case 4:
+        data[1]++;
+        if (data[1] == 90)
+        {
+            PlaySE(SE_TRACK_HAIK);
+            data[1] = 0;
+            data[0] = 5;
+        }
+        break;
+    case 5:
+        data[1]++;
+        if (data[1] == 120)
+        {
             MapGridSetMetatileIdAt(11, 8, 520);
             MapGridSetMetatileIdAt(11, 9, 528);
             MapGridSetMetatileIdAt(11, 10, 536);
@@ -208,9 +208,9 @@ void Task_HandleTruckSequence(u8 taskId)
             PlaySE(SE_TRACK_DOOR);
             DestroyTask(taskId);
             ScriptContext2_Disable();
-       }
-       break;
-   }
+        }
+        break;
+    }
 }
 
 void ExecuteTruckSequence(void)
@@ -239,7 +239,7 @@ bool8 sub_80C7754(void)
     s8 mapGroup, mapNum;
     s16 x, y;
 
-    if (sub_810D9EC(&mapGroup, &mapNum, &x, &y))
+    if (GetSSTidalLocation(&mapGroup, &mapNum, &x, &y))
     {
         return FALSE;
     }
@@ -270,7 +270,7 @@ void Task_HandlePorthole(u8 taskId)
             data[1] = 1;
         if (!sub_80A212C(0xFF, location->mapNum, location->mapGroup))
             return;
-        if (sub_810D9B0(1) == TRUE)
+        if (CountSSTidalStep(1) == TRUE)
         {
             if (*var == 2)
                 *var = 9;
@@ -286,7 +286,7 @@ void Task_HandlePorthole(u8 taskId)
             data[0] = EXIT_PORTHOLE; // exit porthole.
             return;
         }
-		// run this once.
+        // run this once.
         if (*var == 2) // which direction?
         {
             exec_movement(0xFF, location->mapNum, location->mapGroup, gUnknown_083D295F);

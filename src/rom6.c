@@ -14,7 +14,7 @@
 extern u16 gScriptLastTalked;
 extern u32 gUnknown_0202FF84[];
 extern struct MapPosition gUnknown_0203923C;
-extern void (*gUnknown_0300485C)(void);
+extern void (*gFieldCallback)(void);
 extern u8 gLastFieldPokeMenuOpened;
 extern void (*gUnknown_03005CE4)(void);
 extern u8 UseRockSmashScript[];
@@ -35,7 +35,7 @@ static void sub_810B634(void);
 bool8 npc_before_player_of_type(u8 a)
 {
     u8 mapObjId;
-    
+
     GetXYCoordsOneStepInFrontOfPlayer(&gUnknown_0203923C.x, &gUnknown_0203923C.y);
     gUnknown_0203923C.height = PlayerGetZCoord();
     mapObjId = GetFieldObjectIdByXYZ(gUnknown_0203923C.x, gUnknown_0203923C.y, gUnknown_0203923C.height);
@@ -59,7 +59,7 @@ u8 oei_task_add(void)
 static void task08_080C9820(u8 taskId)
 {
     u8 mapObjId;
-    
+
     ScriptContext2_Enable();
     gPlayerAvatar.unk6 = 1;
     mapObjId = gPlayerAvatar.mapObjectId;
@@ -112,7 +112,7 @@ static void sub_810B428(u8 taskId)
 static void sub_810B4CC(u8 taskId)
 {
     void (*func)(void) = (void (*)(void))(((u16)gTasks[taskId].data[8] << 16) | (u16)gTasks[taskId].data[9]);
-    
+
     func();
     gPlayerAvatar.unk6 = 0;
     DestroyTask(taskId);
@@ -122,7 +122,7 @@ bool8 SetUpFieldMove_RockSmash(void)
 {
     if (npc_before_player_of_type(0x56) == TRUE)
     {
-        gUnknown_0300485C = sub_808AB90;
+        gFieldCallback = sub_808AB90;
         gUnknown_03005CE4 = sub_810B53C;
         return TRUE;
     }
@@ -141,7 +141,7 @@ static void sub_810B53C(void)
 int FldEff_RockSmash(void)
 {
     u8 taskId = oei_task_add();
-    
+
     gTasks[taskId].data[8] = (u32)sub_810B58C >> 16;
     gTasks[taskId].data[9] = (u32)sub_810B58C;
     IncrementGameStat(0x13);
@@ -159,7 +159,7 @@ int SetUpFieldMove_Dig(void)
 {
     if (sub_80CA1C8() == TRUE)
     {
-        gUnknown_0300485C = sub_808AB90;
+        gFieldCallback = sub_808AB90;
         gUnknown_03005CE4 = sub_810B5D8;
         return TRUE;
     }
@@ -179,7 +179,7 @@ static void sub_810B5D8(void)
 int FldEff_UseDig(void)
 {
     u8 taskId = oei_task_add();
-    
+
     gTasks[taskId].data[8] = (u32)sub_810B634 >> 16;
     gTasks[taskId].data[9] = (u32)sub_810B634;
     if (!ShouldDoBrailleDigEffect())
@@ -190,7 +190,7 @@ int FldEff_UseDig(void)
 static void sub_810B634(void)
 {
     u8 taskId;
-    
+
     FieldEffectActiveListRemove(0x26);
     if (ShouldDoBrailleDigEffect())
     {

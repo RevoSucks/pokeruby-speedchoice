@@ -7,6 +7,7 @@
 #include "field_player_avatar.h"
 #include "metatile_behavior.h"
 #include "rng.h"
+#include "roamer.h"
 #include "rom4.h"
 #include "safari_zone.h"
 #include "script.h"
@@ -3473,7 +3474,7 @@ bool8 StandardWildEncounter(u16 a, u16 b)
 
                     if (DoWildEncounterTest(gWildMonHeaders[headerNum].landMonsInfo->encounterRate, 0) == TRUE)
                     {
-                        if (sub_81344CC() == TRUE)
+                        if (TryStartRoamerEncounter() == TRUE)
                         {
                             roamer = &gSaveBlock1.roamer;
                             if (RepelCheck(roamer->level))
@@ -3507,7 +3508,7 @@ bool8 StandardWildEncounter(u16 a, u16 b)
 
                     if (DoWildEncounterTest(gWildMonHeaders[headerNum].waterMonsInfo->encounterRate, 0) == TRUE)
                     {
-                        if (sub_81344CC() == TRUE)
+                        if (TryStartRoamerEncounter() == TRUE)
                         {
                             roamer = &gSaveBlock1.roamer;
                             if (RepelCheck(roamer->level))
@@ -3575,7 +3576,7 @@ bool8 SweetScentWildEncounter(void)
             wildPokemonInfo = gWildMonHeaders[headerNum].landMonsInfo;
             if (wildPokemonInfo == NULL)
                 return FALSE;
-            if (sub_81344CC() == TRUE)
+            if (TryStartRoamerEncounter() == TRUE)
             {
                 StartBattle_Roamer();
                 return TRUE;
@@ -3592,7 +3593,7 @@ bool8 SweetScentWildEncounter(void)
             wildPokemonInfo = gWildMonHeaders[headerNum].waterMonsInfo;
             if (wildPokemonInfo == NULL)
                 return FALSE;
-            if (sub_81344CC() == TRUE)
+            if (TryStartRoamerEncounter() == TRUE)
             {
                 StartBattle_Roamer();
                 return TRUE;

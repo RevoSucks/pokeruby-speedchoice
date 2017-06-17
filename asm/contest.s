@@ -11,15 +11,15 @@ nullsub_89: @ 80AB1AC
 	bx lr
 	thumb_func_end nullsub_89
 
-	thumb_func_start sub_80AB1B0
-sub_80AB1B0: @ 80AB1B0
+	thumb_func_start ResetLinkContestBoolean
+ResetLinkContestBoolean: @ 80AB1B0
 	ldr r1, _080AB1B8 @ =gIsLinkContest
 	movs r0, 0
 	strb r0, [r1]
 	bx lr
 	.align 2, 0
 _080AB1B8: .4byte gIsLinkContest
-	thumb_func_end sub_80AB1B0
+	thumb_func_end ResetLinkContestBoolean
 
 	thumb_func_start sub_80AB1BC
 sub_80AB1BC: @ 80AB1BC
@@ -420,7 +420,7 @@ _080AB4E0:
 	adds r0, r1
 	movs r1, 0
 	strb r1, [r0]
-	bl sub_8040710
+	bl ClearBattleMonForms
 	bl sub_80AB398
 	ldr r1, _080AB54C @ =gMain
 	ldr r0, _080AB550 @ =0x0000043c
@@ -1577,7 +1577,7 @@ _080ABEC6:
 	ands r5, r0
 	cmp r5, 0
 	beq _080ABF08
-	bl sub_814A7FC
+	bl DestroyMenuCursor
 	movs r0, 0x5
 	bl PlaySE
 	ldr r0, _080ABF00 @ =gTasks
@@ -2294,7 +2294,7 @@ _080AC534:
 	lsls r4, 2
 	mov r9, r4
 	ldr r4, _080AC5C4 @ =0x02019348
-	ldr r1, _080AC5C8 @ =gUnknown_02024E84
+	ldr r1, _080AC5C8 @ =gBattleMonForms
 	movs r2, 0
 	adds r0, r1, 0x3
 _080AC542:
@@ -2358,7 +2358,7 @@ _080AC542:
 	bl _080AD8CA
 	.align 2, 0
 _080AC5C4: .4byte 0x02019348
-_080AC5C8: .4byte gUnknown_02024E84
+_080AC5C8: .4byte gBattleMonForms
 _080AC5CC: .4byte 0xfffffebc
 _080AC5D0: .4byte gContestMons
 _080AC5D4: .4byte gSprites
@@ -5585,7 +5585,7 @@ sub_80ADFD8: @ 80ADFD8
 	bne _080ADFFC
 	adds r0, r2, 0
 	bl DestroyTask
-	ldr r0, _080AE004 @ =gUnknown_0300485C
+	ldr r0, _080AE004 @ =gFieldCallback
 	ldr r1, _080AE008 @ =sub_80AE010
 	str r1, [r0]
 	ldr r0, _080AE00C @ =c2_exit_to_overworld_2_switch
@@ -5595,7 +5595,7 @@ _080ADFFC:
 	bx r0
 	.align 2, 0
 _080AE000: .4byte gPaletteFade
-_080AE004: .4byte gUnknown_0300485C
+_080AE004: .4byte gFieldCallback
 _080AE008: .4byte sub_80AE010
 _080AE00C: .4byte c2_exit_to_overworld_2_switch
 	thumb_func_end sub_80ADFD8
@@ -15035,7 +15035,7 @@ sub_80B2790: @ 80B2790
 	movs r2, 0x14
 	bl memset
 	bl battle_anim_clear_some_data
-	ldr r1, _080B27F8 @ =gUnknown_02024E84
+	ldr r1, _080B27F8 @ =gBattleMonForms
 	movs r2, 0
 	adds r0, r1, 0x3
 _080B27D0:
@@ -15057,7 +15057,7 @@ _080B27D0:
 	.align 2, 0
 _080B27F0: .4byte 0x02019260
 _080B27F4: .4byte gContestMons
-_080B27F8: .4byte gUnknown_02024E84
+_080B27F8: .4byte gBattleMonForms
 _080B27FC:
 	cmp r5, 0x82
 	beq _080B2898

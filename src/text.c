@@ -1756,21 +1756,21 @@ u16 InitWindowTileData(struct Window *win, u16 startOffset)
     case 1:
         switch (win->config->fontNum)
         {
-            case 0:
-            case 3:
-                retVal = LoadFixedWidthFont(win, startOffset);
-                break;
-            case 1:
-            case 2:
-                retVal = LoadFixedWidthFont_Font1Latin(win, startOffset);
-                break;
-            case 4:
-            case 5:
-                retVal = LoadFixedWidthFont_Font4Latin(win, startOffset);
-                break;
-            case 6:
-                retVal = LoadFixedWidthFont_Braille(win, startOffset);
-                break;
+        case 0:
+        case 3:
+            retVal = LoadFixedWidthFont(win, startOffset);
+            break;
+        case 1:
+        case 2:
+            retVal = LoadFixedWidthFont_Font1Latin(win, startOffset);
+            break;
+        case 4:
+        case 5:
+            retVal = LoadFixedWidthFont_Font4Latin(win, startOffset);
+            break;
+        case 6:
+            retVal = LoadFixedWidthFont_Braille(win, startOffset);
+            break;
         }
         break;
     }
@@ -1889,30 +1889,30 @@ static void MultistepLoadFont_LoadGlyph(struct Window *win, u16 startOffset, u8 
 
     switch (win->config->fontNum)
     {
-        case 0:
-        case 3:
-            buffer = win->tileData + 32 * startOffset + 64 * glyph;
-            LoadFixedWidthGlyph(win, glyph, buffer);
-            break;
-        case 1:
-        case 2:
-            buffer = win->tileData + 32 * (glyph + startOffset);
-            ApplyColors_UnshadowedFont(
-                &sFont1LatinGlyphs[8 * glyph],
-                (u32 *)buffer,
-                win->foregroundColor,
-                win->backgroundColor);
-            break;
-        case 4:
-        case 5:
-            buffer = win->tileData + 32 * (glyph + startOffset);
-            ApplyColors_ShadowedFont(
-                &gFont4LatinGlyphs[8 * glyph],
-                buffer,
-                win->foregroundColor,
-                win->shadowColor,
-                win->backgroundColor);
-            break;
+    case 0:
+    case 3:
+        buffer = win->tileData + 32 * startOffset + 64 * glyph;
+        LoadFixedWidthGlyph(win, glyph, buffer);
+        break;
+    case 1:
+    case 2:
+        buffer = win->tileData + 32 * (glyph + startOffset);
+        ApplyColors_UnshadowedFont(
+            &sFont1LatinGlyphs[8 * glyph],
+            (u32 *)buffer,
+            win->foregroundColor,
+            win->backgroundColor);
+        break;
+    case 4:
+    case 5:
+        buffer = win->tileData + 32 * (glyph + startOffset);
+        ApplyColors_ShadowedFont(
+            &gFont4LatinGlyphs[8 * glyph],
+            buffer,
+            win->foregroundColor,
+            win->shadowColor,
+            win->backgroundColor);
+        break;
     }
 }
 
@@ -2348,7 +2348,7 @@ u8 sub_8003490(struct Window *win, u8 c, u16 tileDataStartOffset, u8 left, u8 to
     return retVal;
 }
 
-void sub_80034D4(u8 *tileData, u8 *text)
+void sub_80034D4(u8 *tileData, const u8 *text)
 {
     sub_8004E3C((struct WindowConfig *)&gWindowConfig_81E6C74, tileData, text);
 }
@@ -2490,12 +2490,18 @@ static u8 UpdateWindowText(struct Window *win)
     return 0;
 }
 
+#if defined(ENGLISH)
+#define SUB_800374C_LINE_LENGTH 26
+#elif defined(GERMAN)
+#define SUB_800374C_LINE_LENGTH 27
+#endif
+
 u8 sub_800374C(struct Window *win)
 {
     u8 retVal;
 
     sWaitType = 1;
-    sLineLength = 26;
+    sLineLength = SUB_800374C_LINE_LENGTH;
     retVal = UpdateWindowText(win);
     sLineLength = 26;
     sWaitType = 0;

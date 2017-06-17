@@ -234,7 +234,7 @@ _081373E8:
 	bne _08137410
 	movs r0, 0x5
 	bl PlaySE
-	bl sub_814A7FC
+	bl DestroyMenuCursor
 	movs r0, 0x1
 	movs r1, 0x1
 	movs r2, 0
@@ -3871,7 +3871,7 @@ sub_8139208: @ 8139208
 	ldrh r0, [r4]
 	cmp r0, 0x2
 	bne _0813922A
-	bl sub_814A7FC
+	bl DestroyMenuCursor
 _0813922A:
 	ldrh r0, [r4]
 	bl sub_8120AA8
@@ -4061,7 +4061,7 @@ _081393B2:
 	lsls r0, 24
 	cmp r0, 0
 	bne _081393DE
-	bl sub_814A7FC
+	bl DestroyMenuCursor
 	movs r0, 0x5
 	bl PlaySE
 	movs r2, 0x80
@@ -4812,7 +4812,7 @@ sub_81398BC: @ 81398BC
 	adds r0, r1
 	lsls r0, 2
 	adds r0, r5
-	ldr r1, _08139A24 @ =gUnknown_02024E84
+	ldr r1, _08139A24 @ =gBattleMonForms
 	adds r6, r1
 	ldrb r1, [r6]
 	bl StartSpriteAnim
@@ -4864,7 +4864,7 @@ _08139A14: .4byte gUnknown_0300434C
 _08139A18: .4byte gUnknown_02024E8C
 _08139A1C: .4byte gUnknown_02024BE0
 _08139A20: .4byte gSprites
-_08139A24: .4byte gUnknown_02024E84
+_08139A24: .4byte gBattleMonForms
 _08139A28: .4byte SpriteCallbackDummy
 	thumb_func_end sub_81398BC
 

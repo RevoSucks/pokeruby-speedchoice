@@ -13,10 +13,8 @@ extern u8 unk_2000000[];
 #define EWRAM_15000 ((u8 *)(unk_2000000 + 0x15000))
 
 extern u16 gBattleTypeFlags;
-extern u16 gBlockRecvBuffer[MAX_LINK_PLAYERS][BLOCK_BUFFER_SIZE / 2];
 extern const u32 gBitTable[];
 extern u16 gBattleWeather;
-extern const struct BattleMove gBattleMoves[];
 extern struct BattlePokemon gBattleMons[];
 
 extern u8 gUnknown_020238C4;
@@ -56,7 +54,7 @@ extern void sub_8083C50(u8);
 extern void nullsub_41(void);
 extern void nullsub_91(void);
 extern void battle_anim_clear_some_data(void);
-extern void sub_8040710(void);
+extern void ClearBattleMonForms(void);
 extern void BattleAI_HandleItemUseBeforeAISetup(void);
 extern void sub_8094978(u8, int);
 extern void sub_800BA78(void);
@@ -90,7 +88,7 @@ void sub_800B858(void)
 void setup_poochyena_battle(void)
 {
     s32 i;
-    
+
     gUnknown_030042D4 = nullsub_41;
     for (i = 0; i < 4; i++)
     {
@@ -102,7 +100,7 @@ void setup_poochyena_battle(void)
     sub_800B858();
     gUnknown_02024A64 = 0;
     battle_anim_clear_some_data();
-    sub_8040710();
+    ClearBattleMonForms();
     BattleAI_HandleItemUseBeforeAISetup();
     if (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE)
     {
@@ -118,13 +116,13 @@ void setup_poochyena_battle(void)
 void sub_800B950(void)
 {
     s32 i;
-    
+
     if (gBattleTypeFlags & BATTLE_TYPE_LINK)
         sub_800BA78();
     else
         sub_800B9A8();
     sub_800BD54();
-    if (!(gBattleTypeFlags & BATTLE_TYPE_40))
+    if (!(gBattleTypeFlags & BATTLE_TYPE_MULTI))
     {
         for (i = 0; i < gUnknown_02024A68; i++)
             sub_8094978(i, 0);
@@ -166,7 +164,7 @@ void sub_800BA78(void)
 {
     u8 multiplayerId;
     int i;
-    
+
     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
     {
         if (gBattleTypeFlags & BATTLE_TYPE_WILD)
@@ -188,7 +186,7 @@ void sub_800BA78(void)
         }
         return;
     }
-    if ((gBattleTypeFlags & (BATTLE_TYPE_40 | BATTLE_TYPE_DOUBLE)) == BATTLE_TYPE_DOUBLE)
+    if ((gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_DOUBLE)) == BATTLE_TYPE_DOUBLE)
     {
         if (gBattleTypeFlags & BATTLE_TYPE_WILD)
         {
@@ -214,7 +212,7 @@ void sub_800BA78(void)
             gUnknown_03004330[2] = sub_8037510;
             gUnknown_02024A72[2] = 3;
             gUnknown_02024A68 = 4;
-            
+
         }
         return;
     }
@@ -234,7 +232,7 @@ void sub_800BA78(void)
             sub_8094978(gLinkPlayers[i].lp_field_18, 1);
             break;
         }
-        
+
         if (i == multiplayerId)
         {
             gUnknown_03004330[gLinkPlayers[i].lp_field_18] = sub_802BF74;
@@ -298,8 +296,8 @@ void sub_800BD54(void)
 {
     int i;
     int j;
-    
-    if (!(gBattleTypeFlags & BATTLE_TYPE_40))
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_MULTI))
     {
         for (i = 0; i < gUnknown_02024A68; i++)
         {
@@ -365,7 +363,7 @@ void sub_800BD54(void)
 void dp01_prepare_buffer(u8 a, u8 *b, u16 c)
 {
     int i;
-    
+
     if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {
         dp01_prepare_buffer_wireless_probably(a, c, b);
@@ -413,7 +411,7 @@ void dp01_prepare_buffer_wireless_probably(u8 a, u16 b, u8 *c)
 {
     s32 r9;
     int i;
-    
+
     r9 = b - b % 4 + 4;
     if (gTasks[gUnknown_020238C4].data[14] + r9 + 9 > 0x1000)
     {
@@ -436,7 +434,7 @@ void dp01_prepare_buffer_wireless_probably(u8 a, u16 b, u8 *c)
 void sub_800C1A8(u8 taskId)
 {
     u16 var;
-    
+
     switch (gTasks[taskId].data[11])
     {
     case 0:
@@ -509,7 +507,7 @@ void sub_800C35C(void)
     u8 *recvBuffer;  //r3
     u8 *dest;  //r5
     u8 *src;  //r4
-    
+
     if (gReceivedRemoteLinkPlayers != 0 && (gBattleTypeFlags & 0x20) && gLinkPlayers[0].linkType == 0x2211)
     {
         for (i = 0; i < GetLinkPlayerCount(); i++)
@@ -545,7 +543,7 @@ void sub_800C47C(u8 taskId)
     u16 r7;
     u8 r4;
     u8 r2;
-    
+
     if (gTasks[taskId].data[15] != gTasks[taskId].data[14])
     {
         if (gTasks[taskId].data[15] > gTasks[taskId].data[14]
@@ -583,7 +581,7 @@ void sub_800C47C(u8 taskId)
     }
 }
 
-void dp01_build_cmdbuf_x00_a_b_0(u8 a, int b, int c)
+void dp01_build_cmdbuf_x00_a_b_0(u8 a, u8 b, u8 c)
 {
     gUnknown_03004040[0] = 0;
     gUnknown_03004040[1] = b;
@@ -592,7 +590,7 @@ void dp01_build_cmdbuf_x00_a_b_0(u8 a, int b, int c)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x01_a_b_0(u8 a, int b, int c)
+void dp01_build_cmdbuf_x01_a_b_0(u8 a, u8 b, u8 c)
 {
     gUnknown_03004040[0] = 1;
     gUnknown_03004040[1] = b;
@@ -601,10 +599,10 @@ void dp01_build_cmdbuf_x01_a_b_0(u8 a, int b, int c)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x02_a_b_varargs(u8 a, int b, int c, u8 d, u8 *e)
+void dp01_build_cmdbuf_x02_a_b_varargs(u8 a, u8 b, u8 c, u8 d, u8 *e)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 2;
     gUnknown_03004040[1] = b;
     gUnknown_03004040[2] = c;
@@ -613,10 +611,10 @@ void dp01_build_cmdbuf_x02_a_b_varargs(u8 a, int b, int c, u8 d, u8 *e)
     dp01_prepare_buffer(a, gUnknown_03004040, d + 3);
 }
 
-void unref_sub_800C6A4(u8 a, int b, u8 c, u8 *d)
+void unref_sub_800C6A4(u8 a, u8 b, u8 c, u8 *d)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 3;
     gUnknown_03004040[1] = b;
     gUnknown_03004040[2] = c;
@@ -634,7 +632,7 @@ void dp01_build_cmdbuf_x04_4_4_4(u8 a)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void sub_800C704(u8 a, int b, int c)
+void sub_800C704(u8 a, u8 b, u8 c)
 {
     gUnknown_03004040[0] = 5;
     gUnknown_03004040[1] = b;
@@ -643,7 +641,7 @@ void sub_800C704(u8 a, int b, int c)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x06_a(u8 a, int b)
+void dp01_build_cmdbuf_x06_a(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 6;
     gUnknown_03004040[1] = b;
@@ -704,7 +702,7 @@ void dp01_build_cmdbuf_x0C_C_C_C(u8 a)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x0D_a(u8 a, int b)
+void dp01_build_cmdbuf_x0D_a(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 13;
     gUnknown_03004040[1] = b;
@@ -714,7 +712,7 @@ void dp01_build_cmdbuf_x0D_a(u8 a, int b)
 void unref_sub_800C828(u8 a, u8 b, u8 *c)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 14;
     gUnknown_03004040[1] = b;
     for (i = 0; i < b * 3; i++)
@@ -722,7 +720,7 @@ void unref_sub_800C828(u8 a, u8 b, u8 *c)
     dp01_prepare_buffer(a, gUnknown_03004040, b * 3 + 2);
 }
 
-void dp01_build_cmdbuf_x0F_aa_b_cc_dddd_e_mlc_weather_00_x1Cbytes(u8 a, u16 b, u8 c, u16 d, int e, u8 f, u8 *g)
+void dp01_build_cmdbuf_x0F_aa_b_cc_dddd_e_mlc_weather_00_x1Cbytes(u8 a, u16 b, u8 c, u16 d, s32 e, u8 f, u8 *g)
 {
     gUnknown_03004040[0] = 15;
     gUnknown_03004040[1] = b;
@@ -757,16 +755,16 @@ void dp01_build_cmdbuf_x10_TODO(u8 a, u16 b)
 {
     int i;
     //u16 *r12;
-    
+
     gUnknown_03004040[0] = 16;
     gUnknown_03004040[1] = gUnknown_02024D26;
     gUnknown_03004040[2] = b;
     gUnknown_03004040[3] = (b & 0xFF00) >> 8;
-    
+
     *((u16 *)&gUnknown_03004040[4]) = gUnknown_02024BE6;
     *((u16 *)&gUnknown_03004040[6]) = gUnknown_02024BE8;
     *((u16 *)&gUnknown_03004040[8]) = gUnknown_02024C04;
-    
+
     gUnknown_03004040[10] = byte_2024C06;
     gUnknown_03004040[11] = unk_2000000[0x16000 + 3];
     gUnknown_03004040[12] = unk_2000000[0x16000 + 0x5E];
@@ -1040,7 +1038,7 @@ _0800CB54: .4byte gUnknown_030041C0\n\
     .syntax divided\n");
 }
 
-void dp01_build_cmdbuf_x12_a_bb(u8 a, int b, u16 c)
+void dp01_build_cmdbuf_x12_a_bb(u8 a, u8 b, u16 c)
 {
     gUnknown_03004040[0] = 18;
     gUnknown_03004040[1] = b;
@@ -1049,17 +1047,17 @@ void dp01_build_cmdbuf_x12_a_bb(u8 a, int b, u16 c)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void unref_sub_800CB84(u8 a, int b)
+void unref_sub_800CB84(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 19;
     gUnknown_03004040[1] = b;
     dp01_prepare_buffer(a, gUnknown_03004040, 2);
 }
 
-void sub_800CBA4(u8 a, int b, int c, u8 *d)
+void sub_800CBA4(u8 a, u8 b, u8 c, u8 *d)
 {
     u32 i;
-    
+
     gUnknown_03004040[0] = 20;
     gUnknown_03004040[1] = b;
     gUnknown_03004040[2] = c;
@@ -1072,17 +1070,17 @@ void sub_800CBA4(u8 a, int b, int c, u8 *d)
 void sub_800CBE0(u8 a, u8 *b)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 21;
     for (i = 0; i < 3; i++)
         gUnknown_03004040[1 + i] = b[i];
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x16_a_b_c_ptr_d_e_f(u8 a, int b, int c, int d, u8 *e)
+void dp01_build_cmdbuf_x16_a_b_c_ptr_d_e_f(u8 a, u8 b, u8 c, u8 d, u8 *e)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 22;
     gUnknown_03004040[1] = b;
     gUnknown_03004040[2] = c;
@@ -1110,7 +1108,7 @@ void dp01_build_cmdbuf_x18_0_aa_health_bar_update(u8 a, s16 b)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x19_a_bb(u8 a, int b, s16 c)
+void dp01_build_cmdbuf_x19_a_bb(u8 a, u8 b, s16 c)
 {
     gUnknown_03004040[0] = 25;
     gUnknown_03004040[1] = b;
@@ -1133,7 +1131,7 @@ void dp01_build_cmdbuf_x1A_aaaa_bbbb(u8 a, u32 b, u32 c)
     dp01_prepare_buffer(a, gUnknown_03004040, 9);
 }
 
-void dp01_build_cmdbuf_x1B_aaaa_b(u8 a, int b, u32 c)
+void dp01_build_cmdbuf_x1B_aaaa_b(u8 a, u8 b, u32 c)
 {
     gUnknown_03004040[0] = 27;
     gUnknown_03004040[1] = b;
@@ -1144,7 +1142,7 @@ void dp01_build_cmdbuf_x1B_aaaa_b(u8 a, int b, u32 c)
     dp01_prepare_buffer(a, gUnknown_03004040, 6);
 }
 
-void dp01_build_cmdbuf_x1C_a(u8 a, int b)
+void dp01_build_cmdbuf_x1C_a(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 28;
     gUnknown_03004040[1] = b;
@@ -1154,7 +1152,7 @@ void dp01_build_cmdbuf_x1C_a(u8 a, int b)
 void dp01_build_cmdbuf_x1D_1D_numargs_varargs(u8 a, u16 b, u8 *c)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 29;
     gUnknown_03004040[1] = 29;
     gUnknown_03004040[2] = b;
@@ -1167,7 +1165,7 @@ void dp01_build_cmdbuf_x1D_1D_numargs_varargs(u8 a, u16 b, u8 *c)
 void unref_sub_800CDD4(u8 a, u32 b, u16 c, u8 *d)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 30;
     gUnknown_03004040[1] = b;
     gUnknown_03004040[2] = (b & 0x0000FF00) >> 8;
@@ -1183,7 +1181,7 @@ void unref_sub_800CDD4(u8 a, u32 b, u16 c, u8 *d)
 void unref_sub_800CE3C(u8 a, u16 b, u8 *c)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 31;
     gUnknown_03004040[1] = b;
     gUnknown_03004040[2] = (b & 0xFF00) >> 8;
@@ -1195,7 +1193,7 @@ void unref_sub_800CE3C(u8 a, u16 b, u8 *c)
 void unref_sub_800CE84(u8 a, u16 b, u8 *c)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 32;
     gUnknown_03004040[1] = b;
     gUnknown_03004040[2] = (b & 0xFF00) >> 8;
@@ -1204,7 +1202,7 @@ void unref_sub_800CE84(u8 a, u16 b, u8 *c)
     dp01_prepare_buffer(a, gUnknown_03004040, b + 3);
 }
 
-void dp01_build_cmdbuf_x21_a_bb(u8 a, int b, u16 c)
+void dp01_build_cmdbuf_x21_a_bb(u8 a, u8 b, u16 c)
 {
     gUnknown_03004040[0] = 33;
     gUnknown_03004040[1] = b;
@@ -1213,10 +1211,10 @@ void dp01_build_cmdbuf_x21_a_bb(u8 a, int b, u16 c)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x22_a_three_bytes(u8 a, int b, u8 *c)
+void dp01_build_cmdbuf_x22_a_three_bytes(u8 a, u8 b, u8 *c)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 34;
     gUnknown_03004040[1] = b;
     for (i = 0; i < 3; i++)
@@ -1251,7 +1249,7 @@ void dp01_build_cmdbuf_x25_25_25_25(u8 a)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x26_a(u8 a, int b)
+void dp01_build_cmdbuf_x26_a(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 38;
     gUnknown_03004040[1] = b;
@@ -1321,7 +1319,7 @@ void dp01_build_cmdbuf_x2D_2D_2D_2D(u8 a)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x2E_a(u8 a, int b)
+void dp01_build_cmdbuf_x2E_a(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 46;
     gUnknown_03004040[1] = b;
@@ -1340,7 +1338,7 @@ void dp01_build_cmdbuf_x2F_2F_2F_2F(u8 a)
 void dp01_build_cmdbuf_x30_TODO(u8 a, u8 *b, u8 c)
 {
     int i;
-    
+
     gUnknown_03004040[0] = 48;
     gUnknown_03004040[1] = c & 0x7F;
     gUnknown_03004040[2] = (c & 0x80) >> 7;
@@ -1368,7 +1366,7 @@ void dp01_build_cmdbuf_x32_32_32_32(u8 a)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x33_a_33_33(u8 a, int b)
+void dp01_build_cmdbuf_x33_a_33_33(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 51;
     gUnknown_03004040[1] = b;
@@ -1377,7 +1375,7 @@ void dp01_build_cmdbuf_x33_a_33_33(u8 a, int b)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void dp01_build_cmdbuf_x34_a_bb_aka_battle_anim(u8 a, int b, u16 c)
+void dp01_build_cmdbuf_x34_a_bb_aka_battle_anim(u8 a, u8 b, u16 c)
 {
     gUnknown_03004040[0] = 52;
     gUnknown_03004040[1] = b;
@@ -1386,21 +1384,21 @@ void dp01_build_cmdbuf_x34_a_bb_aka_battle_anim(u8 a, int b, u16 c)
     dp01_prepare_buffer(a, gUnknown_03004040, 4);
 }
 
-void sub_800D1D8(u8 a, int b)
+void sub_800D1D8(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 53;
     gUnknown_03004040[1] = b;
     dp01_prepare_buffer(a, gUnknown_03004040, 2);
 }
 
-void dp01_build_cmdbuf_x38_a(u8 a, int b)
+void dp01_build_cmdbuf_x38_a(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 54;
     gUnknown_03004040[1] = b;
     dp01_prepare_buffer(a, gUnknown_03004040, 2);
 }
 
-void dp01_build_cmdbuf_x37_a(u8 a, int b)
+void dp01_build_cmdbuf_x37_a(u8 a, u8 b)
 {
     gUnknown_03004040[0] = 55;
     gUnknown_03004040[1] = b;

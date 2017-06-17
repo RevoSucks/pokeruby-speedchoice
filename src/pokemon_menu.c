@@ -37,7 +37,7 @@ void PokemonMenu_FieldMove(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
     
-    sub_8072DEC();
+    HandleDestroyMenuCursors();
     
     data[11] = gUnknown_0202FFAA[gUnknown_0202FFA8] - 10;
     

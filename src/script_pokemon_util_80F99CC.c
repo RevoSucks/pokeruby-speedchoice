@@ -1,6 +1,7 @@
 #include "global.h"
 #include "asm.h"
 #include "battle_party_menu.h"
+#include "data2.h"
 #include "palette.h"
 #include "pokemon.h"
 #include "rom4.h"
@@ -17,9 +18,7 @@ extern u16 gSpecialVar_0x8005;
 extern u8 gUnknown_02038694;
 extern u16 gScriptResult;
 
-extern u8 gMoveNames[][13];
-
-extern void (*gUnknown_0300485C)(void);
+extern void (*gFieldCallback)(void);
 
 extern void OpenPartyMenu(u8, u8);
 extern void TryCreatePartyMenuMonIcon(u8, u8, struct Pokemon *);
@@ -81,62 +80,62 @@ bool8 sub_80F9ACC(void)
 {
     switch(EWRAM_1B000.unk264)
     {
-        case 0:
-            if(EWRAM_1B000.unk266 < gPlayerPartyCount)
-            {
-                TryCreatePartyMenuMonIcon(EWRAM_1B000.unk260, EWRAM_1B000.unk266, &gPlayerParty[EWRAM_1B000.unk266]);
-                EWRAM_1B000.unk266++;
-            }
-            else
-            {
-                EWRAM_1B000.unk266 = 0;
-                EWRAM_1B000.unk264++;
-            }
+    case 0:
+        if(EWRAM_1B000.unk266 < gPlayerPartyCount)
+        {
+            TryCreatePartyMenuMonIcon(EWRAM_1B000.unk260, EWRAM_1B000.unk266, &gPlayerParty[EWRAM_1B000.unk266]);
+            EWRAM_1B000.unk266++;
+        }
+        else
+        {
+            EWRAM_1B000.unk266 = 0;
+            EWRAM_1B000.unk264++;
+        }
+        break;
+    case 1:
+        LoadHeldItemIconGraphics();
+        EWRAM_1B000.unk264++;
+        break;
+    case 2:
+        CreateHeldItemIcons_806DC34(EWRAM_1B000.unk260);
+        EWRAM_1B000.unk264++;
+        break;
+    case 3:
+        if(sub_806BD58(EWRAM_1B000.unk260, EWRAM_1B000.unk266) != 1)
+        {
+            EWRAM_1B000.unk266++;
             break;
-        case 1:
-            LoadHeldItemIconGraphics();
+        }
+        else
+        {
+            EWRAM_1B000.unk266 = 0;
             EWRAM_1B000.unk264++;
             break;
-        case 2:
-            CreateHeldItemIcons_806DC34(EWRAM_1B000.unk260);
-            EWRAM_1B000.unk264++;
+        }
+    case 4:
+        PartyMenuPrintMonsLevelOrStatus();
+        EWRAM_1B000.unk264++;
+        break;
+    case 5:
+        PrintPartyMenuMonNicknames();
+        EWRAM_1B000.unk264++;
+        break;
+    case 6:
+        sub_80F9C00();
+        EWRAM_1B000.unk264++;
+        break;
+    case 7: // the only case that can return true.
+        if(sub_806B58C(EWRAM_1B000.unk266) != 1)
+        {
+            EWRAM_1B000.unk266++;
             break;
-        case 3:
-            if(sub_806BD58(EWRAM_1B000.unk260, EWRAM_1B000.unk266) != 1)
-            {
-                EWRAM_1B000.unk266++;
-                break;
-            }
-            else
-            {
-                EWRAM_1B000.unk266 = 0;
-                EWRAM_1B000.unk264++;
-                break;
-            }
-        case 4:
-            PartyMenuPrintMonsLevelOrStatus();
-            EWRAM_1B000.unk264++;
-            break;
-        case 5:
-            PrintPartyMenuMonNicknames();
-            EWRAM_1B000.unk264++;
-            break;
-        case 6:
-            sub_80F9C00();
-            EWRAM_1B000.unk264++;
-            break;
-        case 7: // the only case that can return true.
-            if(sub_806B58C(EWRAM_1B000.unk266) != 1)
-            {
-                EWRAM_1B000.unk266++;
-                break;
-            }
-            else
-            {
-                EWRAM_1B000.unk266 = 0;
-                EWRAM_1B000.unk264 = 0;
-                return TRUE;
-            }
+        }
+        else
+        {
+            EWRAM_1B000.unk266 = 0;
+            EWRAM_1B000.unk264 = 0;
+            return TRUE;
+        }
     }
     return FALSE;
 }
@@ -144,20 +143,20 @@ bool8 sub_80F9ACC(void)
 void sub_80F9C00(void)
 {
     u8 i;
-    
+
     for(i = 0; i < gPlayerPartyCount; i++)
     {
         switch(sub_80AE47C(&gPlayerParty[i]))
         {
-            case 0:
-            case 3:
-            case 4:
-                sub_806BC3C(i, 0x7E);
-                break;
-            case 1:
-            case 2:
-                sub_806BC3C(i, 0x70);
-                break;
+        case 0:
+        case 3:
+        case 4:
+            sub_806BC3C(i, 0x7E);
+            break;
+        case 1:
+        case 2:
+            sub_806BC3C(i, 0x70);
+            break;
         }
     }
 }
@@ -168,18 +167,18 @@ void sub_80F9C6C(u8 var)
     {
         switch(sub_806BD80(var))
         {
-            case 1:
-                PlaySE(5);
-                gUnknown_02038694 = sub_806CA38(var);
-                gSpecialVar_0x8004 = gUnknown_02038694;
-                sub_8123138(var);
-                break;
-            case 2:
-                PlaySE(5);
-                gUnknown_02038694 = 0xFF;
-                gSpecialVar_0x8004 = 0xFF;
-                sub_8123138(var);
-                break;
+        case 1:
+            PlaySE(5);
+            gUnknown_02038694 = sub_806CA38(var);
+            gSpecialVar_0x8004 = gUnknown_02038694;
+            sub_8123138(var);
+            break;
+        case 2:
+            PlaySE(5);
+            gUnknown_02038694 = 0xFF;
+            gSpecialVar_0x8004 = 0xFF;
+            sub_8123138(var);
+            break;
         }
     }
 }
@@ -188,62 +187,62 @@ bool8 sub_80F9CE8(void) // this is the same function as sub_80F9ACC except case 
 {
     switch(EWRAM_1B000.unk264)
     {
-        case 0:
-            if(EWRAM_1B000.unk266 < gPlayerPartyCount)
-            {
-                TryCreatePartyMenuMonIcon(EWRAM_1B000.unk260, EWRAM_1B000.unk266, &gPlayerParty[EWRAM_1B000.unk266]);
-                EWRAM_1B000.unk266++;
-            }
-            else
-            {
-                EWRAM_1B000.unk266 = 0;
-                EWRAM_1B000.unk264++;
-            }
+    case 0:
+        if(EWRAM_1B000.unk266 < gPlayerPartyCount)
+        {
+            TryCreatePartyMenuMonIcon(EWRAM_1B000.unk260, EWRAM_1B000.unk266, &gPlayerParty[EWRAM_1B000.unk266]);
+            EWRAM_1B000.unk266++;
+        }
+        else
+        {
+            EWRAM_1B000.unk266 = 0;
+            EWRAM_1B000.unk264++;
+        }
+        break;
+    case 1:
+        LoadHeldItemIconGraphics();
+        EWRAM_1B000.unk264++;
+        break;
+    case 2:
+        CreateHeldItemIcons_806DC34(EWRAM_1B000.unk260);
+        EWRAM_1B000.unk264++;
+        break;
+    case 3:
+        if(sub_806BD58(EWRAM_1B000.unk260, EWRAM_1B000.unk266) != 1)
+        {
+            EWRAM_1B000.unk266++;
             break;
-        case 1:
-            LoadHeldItemIconGraphics();
+        }
+        else
+        {
+            EWRAM_1B000.unk266 = 0;
             EWRAM_1B000.unk264++;
             break;
-        case 2:
-            CreateHeldItemIcons_806DC34(EWRAM_1B000.unk260);
-            EWRAM_1B000.unk264++;
+        }
+    case 4:
+        PartyMenuPrintMonsLevelOrStatus();
+        EWRAM_1B000.unk264++;
+        break;
+    case 5:
+        PrintPartyMenuMonNicknames();
+        EWRAM_1B000.unk264++;
+        break;
+    case 6:
+        sub_80F9E1C();
+        EWRAM_1B000.unk264++;
+        break;
+    case 7: // the only case that can return true.
+        if(sub_806B58C(EWRAM_1B000.unk266) != 1)
+        {
+            EWRAM_1B000.unk266++;
             break;
-        case 3:
-            if(sub_806BD58(EWRAM_1B000.unk260, EWRAM_1B000.unk266) != 1)
-            {
-                EWRAM_1B000.unk266++;
-                break;
-            }
-            else
-            {
-                EWRAM_1B000.unk266 = 0;
-                EWRAM_1B000.unk264++;
-                break;
-            }
-        case 4:
-            PartyMenuPrintMonsLevelOrStatus();
-            EWRAM_1B000.unk264++;
-            break;
-        case 5:
-            PrintPartyMenuMonNicknames();
-            EWRAM_1B000.unk264++;
-            break;
-        case 6:
-            sub_80F9E1C();
-            EWRAM_1B000.unk264++;
-            break;
-        case 7: // the only case that can return true.
-            if(sub_806B58C(EWRAM_1B000.unk266) != 1)
-            {
-                EWRAM_1B000.unk266++;
-                break;
-            }
-            else
-            {
-                EWRAM_1B000.unk266 = 0;
-                EWRAM_1B000.unk264 = 0;
-                return TRUE;
-            }
+        }
+        else
+        {
+            EWRAM_1B000.unk266 = 0;
+            EWRAM_1B000.unk264 = 0;
+            return TRUE;
+        }
     }
     return FALSE;
 }
@@ -251,7 +250,7 @@ bool8 sub_80F9CE8(void) // this is the same function as sub_80F9ACC except case 
 void sub_80F9E1C(void)
 {
     u8 i;
-    
+
     for(i = 0; i < gPlayerPartyCount; i++)
     {
         if(!sub_8040574(&gPlayerParty[i]))
@@ -267,16 +266,16 @@ void sub_80F9E64(u8 var)
     {
         switch(sub_806BD80(var))
         {
-            case 1:
-                PlaySE(5);
-                gSpecialVar_0x8004 = sub_806CA38(var);
-                gSpecialVar_0x8005 = sub_8040574(&gPlayerParty[gSpecialVar_0x8004]);
-                sub_8123138(var);
-                break;
-            case 2:
-                PlaySE(5);
-                gSpecialVar_0x8004 = 0xFF;
-                sub_8123138(var);
+        case 1:
+            PlaySE(5);
+            gSpecialVar_0x8004 = sub_806CA38(var);
+            gSpecialVar_0x8005 = sub_8040574(&gPlayerParty[gSpecialVar_0x8004]);
+            sub_8123138(var);
+            break;
+        case 2:
+            PlaySE(5);
+            gSpecialVar_0x8004 = 0xFF;
+            sub_8123138(var);
         }
     }
 }
@@ -285,7 +284,7 @@ void sub_80F9EEC(void)
 {
     sub_809D9F0(&gPlayerParty[0], gSpecialVar_0x8004, gPlayerPartyCount - 1, c2_exit_to_overworld_2_switch, 0);
     unk_2018000.unk8 = 3;
-    gUnknown_0300485C = sub_8080990;
+    gFieldCallback = sub_8080990;
 }
 
 void sub_80F9F3C(void) // count pokemon moves
@@ -293,7 +292,7 @@ void sub_80F9F3C(void) // count pokemon moves
     u8 i;
 
     gScriptResult = 0;
-    
+
     for(i = 0; i < 4; i++) // checks MOVE1-MOVE4
         if(GetMonData(&gPlayerParty[gSpecialVar_0x8004], i + 13))
             gScriptResult++;
@@ -440,7 +439,7 @@ void sub_80FA0DC(void)
 
     SetMonMoveSlot(&gPlayerParty[gSpecialVar_0x8004], 0, gSpecialVar_0x8005);
     RemoveMonPPBonus(&gPlayerParty[gSpecialVar_0x8004], gSpecialVar_0x8005);
-    
+
     for(i = gSpecialVar_0x8005; i < 3; i++)
         sub_80F9FDC(&gPlayerParty[gSpecialVar_0x8004], i, i + 1);
 }
@@ -449,7 +448,7 @@ void sub_80FA148(void)
 {
     struct Pokemon *party = &gPlayerParty[gSpecialVar_0x8004];
     gScriptResult = 0;
-    
+
     if(GetMonData(party, MON_DATA_IS_EGG))
         gScriptResult = 1;
 }

@@ -2,12 +2,13 @@
 #include "battle_setup.h"
 #include "asm.h"
 #include "battle.h"
+#include "data2.h"
 #include "event_data.h"
 #include "field_control_avatar.h"
 #include "field_map_obj_helpers.h"
 #include "field_message_box.h"
 #include "field_player_avatar.h"
-#include "field_screeneffect.h"
+#include "field_weather.h"
 #include "main.h"
 #include "map_constants.h"
 #include "metatile_behavior.h"
@@ -23,17 +24,17 @@
 #include "species.h"
 #include "starter_choose.h"
 #include "string_util.h"
+#include "strings.h"
 #include "task.h"
 #include "text.h"
 #include "trainer.h"
 
 extern u16 gScriptResult;
 
-extern void (*gUnknown_0300485C)(void);
+extern void (*gFieldCallback)(void);
 
 extern struct Pokemon gEnemyParty[];
 extern struct Pokemon gPlayerParty[];
-extern struct Trainer gTrainers[];
 
 EWRAM_DATA u16 gTrainerBattleMode = 0;
 EWRAM_DATA u16 gTrainerBattleOpponent = 0;
@@ -44,8 +45,6 @@ EWRAM_DATA u8 *gTrainerVictorySpeech = NULL;
 EWRAM_DATA u8 *gTrainerCannotBattleSpeech = NULL;
 EWRAM_DATA u8 *gTrainerBattleScriptReturnAddress = NULL;
 EWRAM_DATA u8 *gTrainerBattleEndScript = NULL;
-
-extern u8 gOtherText_CancelWithTerminator[];
 
 extern u16 gBattleTypeFlags;
 extern u16 gScriptLastTalked;
@@ -581,7 +580,7 @@ void HandleWildBattleEnd(void)
     else
     {
         SetMainCallback2(c2_exit_to_overworld_2_switch);
-        gUnknown_0300485C = sub_8080E44;
+        gFieldCallback = sub_8080E44;
     }
 }
 
@@ -753,7 +752,7 @@ u8 GetWildBattleTransition(void)
 
 u8 GetTrainerBattleTransition(void)
 {
-    struct Trainer *trainer;
+    const struct Trainer *trainer;
     u8 minPartyCount;
     u8 flashVar;
     u8 level;
@@ -1169,12 +1168,12 @@ void PlayTrainerEncounterMusic(void)
 }
 
 //Returns an empty string if a null pointer was passed, otherwise returns str
-u8 *SanitizeString(u8 *str)
+u8 *SanitizeString(const u8 *str)
 {
     if (str)
-        return str;
+        return (u8 *) str;
     else
-        return gOtherText_CancelWithTerminator;
+        return (u8 *) gOtherText_CancelWithTerminator;
 }
 
 u8 *sub_808281C(void)

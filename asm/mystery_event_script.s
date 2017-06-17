@@ -667,23 +667,23 @@ _0812668C:
 	lsrs r4, 16
 	adds r0, r4, 0
 	movs r1, 0x2
-	bl sub_8090D90
+	bl GetNationalPokedexFlag
 	adds r0, r4, 0
 	movs r1, 0x3
-	bl sub_8090D90
+	bl GetNationalPokedexFlag
 _081266C6:
 	adds r0, r7, 0
 	movs r1, 0xC
 	bl GetMonData
 	lsls r0, 16
 	lsrs r0, 16
-	bl itemid_is_mail
+	bl ItemIsMail
 	lsls r0, 24
 	cmp r0, 0
 	beq _081266E4
 	adds r0, r7, 0
 	mov r1, sp
-	bl sub_80A2D88
+	bl GiveMailToMon2
 _081266E4:
 	bl party_compaction
 	bl CalculatePlayerPartyCount

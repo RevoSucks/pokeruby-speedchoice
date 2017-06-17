@@ -10,6 +10,7 @@
 #include "songs.h"
 #include "sound.h"
 #include "sprite.h"
+#include "strings2.h"
 #include "task.h"
 #include "text.h"
 
@@ -38,8 +39,6 @@ extern u16 gBattleTypeFlags;
 extern u16 gScriptItemId;
 
 extern u16 word_3004858;
-
-extern u8 gMultiText_LinkError[];
 
 static void InitLinkTestBG(u8, u8, u8, u8);
 void InitLinkTestBG_Unused(u8, u8, u8, u8);
@@ -149,6 +148,11 @@ struct Link gLink;
 u8 gLastRecvQueueCount;
 u16 gLinkSavedIme;
 
+#ifdef GERMAN
+u8 deUnkValue1;
+u8 deUnkValue2;
+#endif
+
 EWRAM_DATA bool8 gLinkTestDebugValuesEnabled = {0};
 EWRAM_DATA bool8 gLinkTestDummyBool = {0};
 EWRAM_DATA u32 gFiller_20238B8 = {0};
@@ -202,13 +206,13 @@ static void InitLinkTestBG(u8 paletteNum, u8 bgNum, u8 screenBaseBlock, u8 charB
     switch (bgNum)
     {
     case 1:
-        REG_BG1CNT = 1 | (screenBaseBlock << 8) | (charBaseBlock << 2);
+        REG_BG1CNT = BGCNT_PRIORITY(1) | BGCNT_SCREENBASE(screenBaseBlock) | BGCNT_CHARBASE(charBaseBlock);
         break;
     case 2:
-        REG_BG2CNT = 1 | (screenBaseBlock << 8) | (charBaseBlock << 2);
+        REG_BG2CNT = BGCNT_PRIORITY(1) | BGCNT_SCREENBASE(screenBaseBlock) | BGCNT_CHARBASE(charBaseBlock);
         break;
     case 3:
-        REG_BG3CNT = 1 | (screenBaseBlock << 8) | (charBaseBlock << 2);
+        REG_BG3CNT = BGCNT_PRIORITY(1) | BGCNT_SCREENBASE(screenBaseBlock) | BGCNT_CHARBASE(charBaseBlock);
         break;
     }
 }
@@ -250,7 +254,7 @@ void LinkTestScreen(void)
     }
 
     InitLinkTestBG(0, 2, 4, 0);
-    REG_DISPCNT = DISPCNT_OBJ_ON | DISPCNT_BG0_ON | DISPCNT_BG2_ON | DISPCNT_OBJ_1D_MAP;
+    REG_DISPCNT = DISPCNT_MODE_0 | DISPCNT_OBJ_ON | DISPCNT_BG0_ON | DISPCNT_BG2_ON | DISPCNT_OBJ_1D_MAP;
     CreateTask(Task_DestroySelf, 0);
     RunTasks();
     AnimateSprites();
@@ -479,6 +483,9 @@ static void ProcessRecvCmds(u8 unusedParam)
             memcpy(localLinkPlayerBlock.magic2, sMagic, sizeof(localLinkPlayerBlock.magic2) - 1);
             InitBlockSend(&localLinkPlayerBlock, sizeof(localLinkPlayerBlock));
             break;
+        case 0x4444:
+            word_3002910[i] = gRecvCmds[1][i];
+            break;
         case 0x5555:
             byte_3002A68 = 1;
             break;
@@ -549,23 +556,28 @@ static void ProcessRecvCmds(u8 unusedParam)
             sub_80516C4(i, gRecvCmds[1][i]);
             break;
         case 0xCCCC:
-        {
-            const u32 *addresses;
-            const u32 *sizes;
-            void *data;
-            u16 size;
+#if defined(ENGLISH)
+            SendBlock(0, (void *)(sBlockRequestLookupTable)[gRecvCmds[1][i] * 2], (sBlockRequestLookupTable + 1)[gRecvCmds[1][i] * 2]);
+#elif defined(GERMAN)
+            if (deUnkValue2 == 1)
+            {
+                deUnkValue2 = 2;
+                deUnkValue1 = gRecvCmds[1][i];
+            }
+            else if (deUnkValue2 == 2 || deUnkValue2 == 3)
+            {
+                SendBlock(0, (void *)(sBlockRequestLookupTable)[gRecvCmds[1][i] * 2], (sBlockRequestLookupTable + 1)[gRecvCmds[1][i] * 2]);
 
-            addresses = sBlockRequestLookupTable;
-            data = (void *)addresses[gRecvCmds[1][i] * 2];
-
-            sizes = addresses + 1;
-            size = sizes[gRecvCmds[1][i] * 2];
-
-            SendBlock(0, data, size);
-            break;
-        }
-        case 0x4444:
-            word_3002910[i] = gRecvCmds[1][i];
+                if (deUnkValue2 == 2)
+                    deUnkValue2 = 1;
+                else
+                    deUnkValue2 = 0;
+            }
+            else
+            {
+                SendBlock(0, (void *)(sBlockRequestLookupTable)[gRecvCmds[1][i] * 2], (sBlockRequestLookupTable + 1)[gRecvCmds[1][i] * 2]);
+            }
+#endif
             break;
         case 0xCAFE:
             word_3002910[i] = gRecvCmds[1][i];
@@ -630,7 +642,7 @@ static void BuildSendCmd(u16 code)
         gSendCmd[0] = 0x5FFF;
         break;
     case 0xCAFE:
-        if (!word_3004858 || gUnknown_3001764)
+        if (!word_3004858 || gLinkTransferringData)
             break;
         gSendCmd[0] = 0xCAFE;
         gSendCmd[1] = word_3004858;
@@ -676,6 +688,9 @@ void OpenLinkTimed(void)
 {
     sPlayerDataExchangeStatus = EXCHANGE_NOT_STARTED;
     gLinkTimeOutCounter = 0;
+#if defined(GERMAN)
+    ResetBlockSend();
+#endif
     OpenLink();
 }
 

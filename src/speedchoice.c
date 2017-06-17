@@ -364,7 +364,7 @@ void SetPageIndexFromTrueIndex(u8 taskId, s16 index) // data is s16.
     else if(index == START_GAME)
         gLocalSpeedchoiceConfig.pageIndex = 6;
     else
-        gLocalSpeedchoiceConfig.pageIndex = (min((index % OPTIONS_PER_PAGE), OPTIONS_PER_PAGE));
+        gLocalSpeedchoiceConfig.pageIndex = (oldmin((index % OPTIONS_PER_PAGE), OPTIONS_PER_PAGE));
 }
 
 void HighlightHeaderBox(void)

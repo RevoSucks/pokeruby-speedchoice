@@ -10,11 +10,11 @@
 
 #define MENUOPTIONCOORDS(i) (5 + (2 * i))
 
-#define min(a, b) (a < b ? a : b)
-#define max(a, b) (a > b ? a : b)
-
 #define SPINNER_HELL_TIMER 4 // once every 2 frames since the game runs at 60FPS.
 #define MAX_VISION_RANGE 8
+
+#define oldmin(a, b) (a < b ? a : b)
+#define oldmax(a, b) (a > b ? a : b)
 
 // options
 enum

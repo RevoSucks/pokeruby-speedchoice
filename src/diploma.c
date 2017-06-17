@@ -7,12 +7,9 @@
 #include "rom4.h"
 #include "sprite.h"
 #include "string_util.h"
+#include "strings2.h"
 #include "task.h"
 #include "text.h"
-
-extern u8 gOtherText_NationalDex[];
-extern u8 gOtherText_HoennDex[];
-extern u8 gOtherText_DiplomaCertificationGameFreak[];
 
 static void VBlankCB(void);
 static void MainCB2(void);
@@ -23,8 +20,8 @@ static void DisplayDiplomaText(void);
 
 static const u16 gDiplomaPalettes[][16] =
 {
-	INCBIN_U16("graphics/misc/diploma_national.gbapal"),
-	INCBIN_U16("graphics/misc/diploma_hoenn.gbapal"),
+    INCBIN_U16("graphics/misc/diploma_national.gbapal"),
+    INCBIN_U16("graphics/misc/diploma_hoenn.gbapal"),
 };
 
 static const u8 gDiplomaTilemap[] = INCBIN_U8("graphics/misc/diploma_map.bin.lz");
@@ -87,7 +84,7 @@ void sub_8145D88(void)
     REG_BLDCNT = 0;
     REG_BLDALPHA = 0;
     REG_BLDY = 0;
-    REG_BG3CNT = 0x4603;
+    REG_BG3CNT = BGCNT_PRIORITY(3) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(6) | BGCNT_16COLOR | BGCNT_TXT512x256;
     REG_DISPCNT = DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_BG0_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON;
 
     CreateTask(Task_DiplomaFadeIn, 0);

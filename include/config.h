@@ -5,19 +5,33 @@
 #define REVISION 0
 #endif
 
-#if REVISION == 2
+#if (ENGLISH && REVISION == 2) || (GERMAN && REVISION == 1)
 #define BUGFIX_BERRY
 #endif
 
-#if REVISION >= 1
+#if (ENGLISH && REVISION >= 1) || GERMAN
 #define BUGFIX_GLYPHWIDTH
 #define BUGFIX_SAVEFAILEDSCREEN1
 #endif
 
-// #define BUGFIX_SAVEFAILEDSCREEN2
+#if GERMAN
+#define BUGFIX_SAVEFAILEDSCREEN2
+#endif
 
 // European editions of Ruby/Sapphire and all editions of Emerald have this fix.
-// #define BUGFIX_TRAINERAPPROACH
+#if GERMAN
+#define BUGFIX_TRAINERAPPROACH
+#endif
+
+#if (ENGLISH && REVISION >= 1) || GERMAN
+#define BUGFIX_EVO_NAME
+#endif
+
+#ifdef ENGLISH
+#define UNITS_IMPERIAL
+#elif GERMAN
+#define UNITS_METRIC
+#endif
 
 // Fixed in Emerald.
 // #define BUGFIX_SETMONIVS
