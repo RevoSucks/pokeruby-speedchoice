@@ -12,6 +12,14 @@
 
 #define SPINNER_HELL_TIMER 4 // once every 2 frames since the game runs at 60FPS.
 #define MAX_VISION_RANGE 8
+#define PURGE_SPINNER_TIMER 48
+#define BATTLE_SPEED_FRACTION 4
+
+// for a future version
+#define GRASS_QUEUE_SIZE 20
+#define WATER_QUEUE_SIZE 15
+#define ROCKSMASH_QUEUE_SIZE 15
+#define FISHING_QUEUE_SIZE 5
 
 #define oldmin(a, b) (a < b ? a : b)
 #define oldmax(a, b) (a > b ? a : b)

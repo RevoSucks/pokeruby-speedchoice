@@ -21,14 +21,14 @@ extern u8 gSystemText_Terminator[];
 
 // HEADER
 const u8 gSpeedchoiceTextHeader[] = _("{PALETTE 9}SPEEDCHOICE MENU");
-const u8 gSpeedchoiceCurrentVersion[] = _("{PALETTE 9}BETA9");
+const u8 gSpeedchoiceCurrentVersion[] = _("{PALETTE 9}v1.0");
 
 // OPTION CHOICES
 const u8 gSpeedchoiceTextYes[] = _("{PALETTE 15}YES");
 const u8 gSpeedchoiceTextNo[] = _("{PALETTE 15}NO");
 const u8 gSpeedchoiceTextOn[] = _("{PALETTE 15}ON");
 const u8 gSpeedchoiceTextOff[] = _("{PALETTE 15}OFF");
-const u8 gSpeedchoiceTextNerf[] = _("{PALETTE 15}NERF");
+const u8 gSpeedchoiceTextNerf[] = _("{PALETTE 15}PURGE");
 const u8 gSpeedchoiceTextKeep[] = _("{PALETTE 15}KEEP");
 const u8 gSpeedchoiceTextHell[] = _("{PALETTE 15}HELL");
 const u8 gSpeedchoiceTextSemi[] = _("{PALETTE 15}SEMI");
@@ -38,7 +38,7 @@ const u8 gSpeedchoiceTextRand[] = _("{PALETTE 15}RAND");
 const u8 gSpeedchoiceTextSane[] = _("{PALETTE 15}SANE");
 
 // PAGE 1
-const u8 gSpeedchoiceOptionBWExp[] = _("{PALETTE 8}B/W EXP");
+const u8 gSpeedchoiceOptionBWExp[] = _("{PALETTE 15}B/W EXP");
 const u8 gSpeedchoiceOptionAqualess[] = _("{PALETTE 15}AQUALESS");
 const u8 gSpeedchoiceOptionInstantText[] = _("{PALETTE 15}INSTANT TEXT");
 const u8 gSpeedchoiceOptionSpinners[] = _("{PALETTE 15}SPINNERS");
@@ -63,10 +63,10 @@ const u8 gSpeedchoiceOptionPage[] = _("{PALETTE 15}PAGE");
 const u8 gSpeedchoiceOptionStartGame[] = _("{PALETTE 15}START GAME");
 
 // TOOLTIPS
-const u8 gSpeedchoiceTooltipBWEXP[] = _("(WIP) Will replace the\ncurrent experience system\pin favor of Black/White’s\nimplementation.");
+const u8 gSpeedchoiceTooltipBWEXP[] = _("Replaces the current experience\nsystem in favor of\pBlack/White’s implementation.");
 const u8 gSpeedchoiceTooltipAqualess[] = _("SEMI: Stops villian team events\nafter Mt. Chimney.\pFULL: Skips all the villian team\nevents. Also allows Dive to be used\pwithout Gym 7’s badge.");
 const u8 gSpeedchoiceTooltipInstantText[] = _("Self-explanatory.\nHold A or B to mash.");
-const u8 gSpeedchoiceTooltipSpinners[] = _("NERF: Will prevent\nspinners from noticing\pthe player while running.\pHELL: Rapidly spins\nevery spinner every frame.\pAlso fixes bag manip.");
+const u8 gSpeedchoiceTooltipSpinners[] = _("PURGE: Makes spinners on a static\nspinning pattern at a fixed rate.\pHELL: Rapidly spins\nevery spinner every frame.\pAlso fixes bag manip.");
 const u8 gSpeedchoiceTooltipMaxVision[] = _("SANE: Will extend trainer vision\nto 8, but prevent trainers from\pwalking through walls or solid\nobjects.\pHELL: No collision or\nelevation detection.");
 const u8 gSpeedchoiceTooltipNerfGymLeaders[] = _("Reduces Gym Leader Roxanne’s\nteam levels by 2 and\premoves 1 of her potions.\pAlso nerfs Gym Leader Wattson’s\nteam levels by 3 and removes one\pof his Super Potions.");
 const u8 gSpeedchoiceTooltipSuperBike[] = _("While riding the bicycle, you\ncan switch between bikes with\pthe R button.");
@@ -107,7 +107,7 @@ const struct OptionChoiceConfig OptionChoiceConfigOnOff[MAX_CHOICES] =
 
 const struct OptionChoiceConfig OptionChoiceConfigNerfKeep[MAX_CHOICES] = 
 {
-    { 124, (u8 *)&gSpeedchoiceTextNerf },
+    { 118, (u8 *)&gSpeedchoiceTextNerf },
     { 154, (u8 *)&gSpeedchoiceTextKeep },
     { 184, (u8 *)&gSpeedchoiceTextHell },
     { -1, NULL },
@@ -158,7 +158,7 @@ const struct OptionChoiceConfig OptionChoiceConfigPage[MAX_CHOICES] =
 
 const struct SpeedchoiceOption SpeedchoiceOptions[CURRENT_OPTIONS_NUM + 1] = // plus one for page.
 {
-    { 2, (u8 *)&gSpeedchoiceOptionBWExp, (struct OptionChoiceConfig *)OptionChoiceConfigOnOff, (u8 *)&gSpeedchoiceTooltipBWEXP, OFF, FALSE },
+    { 2, (u8 *)&gSpeedchoiceOptionBWExp, (struct OptionChoiceConfig *)OptionChoiceConfigOnOff, (u8 *)&gSpeedchoiceTooltipBWEXP, OFF, TRUE },
     { 3, (u8 *)&gSpeedchoiceOptionAqualess, (struct OptionChoiceConfig *)OptionChoiceConfigSemiFull, (u8 *)&gSpeedchoiceTooltipAqualess, KEEP, TRUE },
     { 2, (u8 *)&gSpeedchoiceOptionInstantText, (struct OptionChoiceConfig *)OptionChoiceConfigOnOff, (u8 *)&gSpeedchoiceTooltipInstantText, OFF, TRUE },
     { 3, (u8 *)&gSpeedchoiceOptionSpinners, (struct OptionChoiceConfig *)OptionChoiceConfigNerfKeep, (u8 *)&gSpeedchoiceTooltipSpinners, KEEP, TRUE },
@@ -182,6 +182,7 @@ EWRAM_DATA u8 gStoredPageNum = 0; // default is 0, only renders options again if
 EWRAM_DATA struct SpeedchoiceConfigStruct gLocalSpeedchoiceConfig = {0};
 EWRAM_DATA struct MapObjectTimerBackup gMapObjectTimerBackup[MAX_SPRITES] = {0};
 EWRAM_DATA bool8 gLastMenuWasSubmenu = {0};
+EWRAM_DATA bool8 gPokedexAreaScreenFlag = {0};
 
 static void Task_SpeedchoiceMenuFadeIn(u8);
 static void Task_SpeedchoiceMenuProcessInput(u8);
@@ -480,7 +481,7 @@ void CB2_InitSpeedchoiceMenu(void)
 
             MenuDrawTextWindow(2, 0, 27, 3);
             MenuPrint(gSpeedchoiceTextHeader, 4, 1); // draw header.
-            MenuPrint(gSpeedchoiceCurrentVersion, 22, 1);
+            MenuPrint(gSpeedchoiceCurrentVersion, 23, 1);
 
             DrawPageOptions(taskId, gLocalSpeedchoiceConfig.pageNum);
             DrawPageChoice(gLocalSpeedchoiceConfig.pageNum);

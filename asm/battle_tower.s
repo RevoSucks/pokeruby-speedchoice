@@ -2891,7 +2891,7 @@ _08135BD4:
 _08135BD8:
 	bl sub_8135CFC
 	ldr r4, _08135C1C @ =gSaveBlock2
-	ldr r0, _08135C2C @ =gUnknown_02024D26
+	ldr r0, _08135C2C @ =gBattleOutcome
 	ldrb r1, [r0]
 	ldr r2, _08135C30 @ =0x00000555
 	adds r0, r4, r2
@@ -2925,7 +2925,7 @@ _08135C1C: .4byte gSaveBlock2
 _08135C20: .4byte 0x00000554
 _08135C24: .4byte gSpecialVar_0x8004
 _08135C28: .4byte 0x0000055c
-_08135C2C: .4byte gUnknown_02024D26
+_08135C2C: .4byte gBattleOutcome
 _08135C30: .4byte 0x00000555
 _08135C34: .4byte 0x00000556
 	thumb_func_end sub_8135BA0
@@ -3553,7 +3553,7 @@ _081360CC: .4byte gSaveBlock2 + 0x4A8
 	thumb_func_start sub_81360D0
 sub_81360D0: @ 81360D0
 	push {lr}
-	ldr r0, _081360E4 @ =gUnknown_02024D26
+	ldr r0, _081360E4 @ =gBattleOutcome
 	ldrb r0, [r0]
 	cmp r0, 0x3
 	bne _081360EC
@@ -3562,7 +3562,7 @@ sub_81360D0: @ 81360D0
 	strb r0, [r1]
 	b _08136102
 	.align 2, 0
-_081360E4: .4byte gUnknown_02024D26
+_081360E4: .4byte gBattleOutcome
 _081360E8: .4byte gStringVar4
 _081360EC:
 	cmp r0, 0x1

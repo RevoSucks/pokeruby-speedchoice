@@ -3110,6 +3110,9 @@ static void Task_ClosePageScreen(u8 taskId)
         DestroyTask(taskId);
 }
 
+extern bool8 gPokedexAreaScreenFlag;
+extern bool8 IsMonInLocalArea(u16 species);
+
 static void Task_InitAreaScreenMultistep(u8 taskId)
 {
     switch (gMain.state)
@@ -3134,6 +3137,7 @@ static void Task_InitAreaScreenMultistep(u8 taskId)
         gMain.state++;
         break;
     case 2:
+        gPokedexAreaScreenFlag = TRUE;
         ShowPokedexAreaScreen(NationalPokedexNumToSpecies(gUnknown_0202FFBC->dexNum), &gPokedexView->unk64F);
         SetVBlankCallback(gUnknown_03005CEC);
         gPokedexView->unk64F = 0;
@@ -3145,6 +3149,13 @@ static void Task_InitAreaScreenMultistep(u8 taskId)
 
 static void Task_AreaScreenProcessInput(u8 taskId)
 {
+    if(gPokedexAreaScreenFlag == TRUE)
+    {
+        if(IsMonInLocalArea(NationalPokedexNumToSpecies(gUnknown_0202FFBC->dexNum)) == TRUE)
+            PlaySE(SE_C_PIKON);
+
+        gPokedexAreaScreenFlag = FALSE;
+    }
     if (gPokedexView->unk64F != 0)
         gTasks[taskId].func = sub_808FA00;
 }

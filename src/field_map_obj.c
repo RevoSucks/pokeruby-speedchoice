@@ -1628,10 +1628,6 @@ u8 FieldObjectIsTrainerAndCloseToPlayer(struct MapObject *mapObject)
     {
         return 0;
     }
-    if(CheckSpeedchoiceOption(SPINNERS, KEEP) == FALSE) // change nerf to spinner type
-    {
-        return 0;
-    }
     PlayerGetDestCoords(&x, &y);
     objx = mapObject->coords2.x;
     objy = mapObject->coords2.y;
@@ -1940,6 +1936,21 @@ u8 sub_805CFE8(struct MapObject *mapObject, struct Sprite *sprite)
     return 0;
 }
 
+u8 GetNextDirection(struct MapObject *mapObject, struct Sprite *sprite)
+{
+    switch(mapObject->mapobj_unk_18)
+    {
+        case DIR_SOUTH:
+			return DIR_WEST;
+        case DIR_NORTH:
+			return DIR_EAST;
+        case DIR_WEST:
+            return DIR_NORTH;
+        case DIR_EAST:
+            return DIR_SOUTH;
+    }
+}
+
 u8 sub_805D008(struct MapObject *mapObject, struct Sprite *sprite)
 {
     u8 direction;
@@ -1949,6 +1960,8 @@ u8 sub_805D008(struct MapObject *mapObject, struct Sprite *sprite)
     memcpy(newDirections, gUnknown_08375240, 4);
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     FieldObjectSetDirection(mapObject, direction);
@@ -2024,6 +2037,8 @@ u8 sub_805D18C(struct MapObject *mapObject, struct Sprite *sprite)
     memcpy(newDirections, gUnknown_08375240, 4);
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     FieldObjectSetDirection(mapObject, direction);
@@ -2237,6 +2252,8 @@ u8 sub_805D5EC(struct MapObject *mapObject, struct Sprite *sprite)
     {
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     }
@@ -2294,6 +2311,8 @@ u8 sub_805D72C(struct MapObject *mapObject, struct Sprite *sprite)
     {
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     }
@@ -2351,6 +2370,8 @@ u8 sub_805D86C(struct MapObject *mapObject, struct Sprite *sprite)
     {
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     }
@@ -2408,6 +2429,8 @@ u8 sub_805D9AC(struct MapObject *mapObject, struct Sprite *sprite)
     {
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     }
@@ -2465,6 +2488,8 @@ u8 sub_805DAEC(struct MapObject *mapObject, struct Sprite *sprite)
     {
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     }
@@ -2522,6 +2547,8 @@ u8 sub_805DC2C(struct MapObject *mapObject, struct Sprite *sprite)
     {
     if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE)
         direction = newDirections[Random() % 4];
+	else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE)
+		direction = GetNextDirection(mapObject, sprite);
     else
         direction = directions[Random() & 1];
     }

@@ -106,8 +106,8 @@ LilycoveCity_Harbor_EventScript_1599E4:: @ 81599E4
 	end
 
 LilycoveCity_Harbor_EventScript_1599EE:: @ 81599EE
-	checkflag 2052
-	jumpif 0, LilycoveCity_Harbor_EventScript_1598BA
+	@checkflag 2052
+	@jumpif 0, LilycoveCity_Harbor_EventScript_1598BA @ allow eon ticket event to occur without game clear flag.
 	checkflag 206
 	jumpeq LilycoveCity_Harbor_EventScript_1598BA
 	checkflag 2131

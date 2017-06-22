@@ -54,8 +54,11 @@ SECTIONS {
         src/battle_2.o(.text);
         asm/battle_2.o(.text);
         asm/battle_3.o(.text);
+        src/battle_4.o(.text);
         asm/battle_4.o(.text);
         asm/battle_5.o(.text);
+        src/battle_5_expupdate.o(.text);
+        asm/battle_5.o(.text_runcommand)
         asm/battle_6.o(.text);
         src/battle_6.o(.text);
         asm/battle_6.o(.text_8030464);

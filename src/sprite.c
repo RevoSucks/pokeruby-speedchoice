@@ -333,6 +333,8 @@ void ResetSpriteData(void)
     gSpriteCoordOffsetY = 0;
 }
 
+extern void sub_80328A4(struct Sprite *sprite);
+
 void AnimateSprites(void)
 {
     u8 i;
@@ -342,7 +344,7 @@ void AnimateSprites(void)
 
         if (sprite->inUse)
         {
-            sprite->callback(sprite);
+			sprite->callback(sprite);
 
             if (sprite->inUse)
                 AnimateSprite(sprite);

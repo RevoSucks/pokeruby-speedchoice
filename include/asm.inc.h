@@ -170,9 +170,9 @@ void sub_806FA18(u8 taskId);
 u8 sub_806E834(const u8 *message, u8 arg1);
 
 // src/rom_8077ABC.o
-u8 battle_side_get_owner(u8);
-u8 battle_get_per_side_status(u8);
-u8 battle_get_side_with_given_state(u8);
+u8 GetBankSide(u8);
+u8 GetBankIdentity(u8);
+u8 GetBankByPlayerAI(u8);
 bool8 IsDoubleBattle();
 
 // asm/field_weather.o
@@ -397,8 +397,8 @@ void sub_811AAD8(u8);
 u8 sub_811AAE8(void);
 
 // asm/battle_message.o
-void get_battle_strings_(u8 *);
-void sub_8120FFC(const u8 *, u8 *);
+void StrCpyDecodeToDisplayedStringBattle(u8 *);
+void StrCpyDecodeBattle(const u8 *, u8 *);
 
 // src/mystery_event_script.o
 u32 sub_812613C(u8 *);

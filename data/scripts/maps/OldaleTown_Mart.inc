@@ -33,6 +33,7 @@ OldaleTown_Mart_Items1:: @ 8152F9C
 
 	.align 2
 OldaleTownSpeedchoice_Mart_Items1:: @ 8152F9C
+	.2byte ITEM_POKE_BALL
 	.2byte ITEM_POTION
 	.2byte ITEM_ANTIDOTE
 	.2byte ITEM_PARALYZE_HEAL

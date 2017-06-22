@@ -244,9 +244,13 @@ void TryRestoringSpinnerTimerBackup(struct Sprite *sprite)
 void SetSpinnerTimer(struct Sprite *sprite, u16 timer)
 {
     TryRestoringSpinnerTimerBackup(sprite);
-    if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE && (gMapObjects[sprite->data0].trainerType == 1 || gMapObjects[sprite->data0].trainerType == 3)) // a bit redundant perhaps?
+    if(CheckSpeedchoiceOption(SPINNERS, HELL) == TRUE && (gMapObjects[sprite->data0].trainerType == 1 || gMapObjects[sprite->data0].trainerType == 3))
     {
         sprite->data3 = (Random() % 4) * 2 + 2;
+    }
+    else if(CheckSpeedchoiceOption(SPINNERS, NERF) == TRUE && (gMapObjects[sprite->data0].trainerType == 1 || gMapObjects[sprite->data0].trainerType == 3)) // a bit redundant perhaps?
+    {
+        sprite->data3 = PURGE_SPINNER_TIMER;
     }
     else
     {

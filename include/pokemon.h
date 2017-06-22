@@ -374,6 +374,10 @@ struct BattleMove
     u32 flags;
 };
 
+#define PROTECT_AFFECTED    0x2
+#define MAGICCOAT_AFFECTED  0x4
+#define SNATCH_AFFECTED 0x8
+
 struct PokemonStorage
 {
  /* 0x00 */ u8 currentBox;

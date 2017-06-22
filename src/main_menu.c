@@ -485,6 +485,8 @@ void Task_MainMenuProcessKeyInput(u8 taskId)
         gTasks[taskId].func = Task_MainMenuHighlight;
 }
 
+extern void unref_sub_80BA0EC(void); // sound check menu
+
 void Task_MainMenuPressedA(u8 taskId)
 {
     enum
@@ -566,7 +568,8 @@ void Task_MainMenuPressedA(u8 taskId)
         break;
     case OPTION:
         gMain.savedCallback = CB2_InitMainMenuFromOptions;
-        SetMainCallback2(CB2_InitOptionMenu);
+        //SetMainCallback2(unref_sub_80BA0EC);
+		SetMainCallback2(CB2_InitOptionMenu);
         DestroyTask(taskId);
         break;
     case MYSTERY_EVENTS:

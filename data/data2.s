@@ -1029,79 +1029,79 @@ gUnknown_081FA724:: @ 81FA724
 	.2byte 0xFFFF
 
 	.align 2
-gUnknown_081FA73C:: @ 81FA73C
+gBattleScriptingCommandsTable:: @ 81FA73C
 	.4byte atk00_attackcanceler
 	.4byte atk01_accuracycheck
 	.4byte atk02_attackstring
 	.4byte atk03_ppreduce
 	.4byte atk04_critcalc
 	.4byte atk05_damagecalc1
-	.4byte atk06_damagecalc2
-	.4byte atk07_damagecalc3
-	.4byte atk08_cmd8
-	.4byte sub_801D8EC
-	.4byte sub_801DA60
-	.4byte sub_801DA80
+	.4byte atk06_typecalc
+	.4byte atk07_dmg_adjustment
+	.4byte atk08_dmg_adjustment2
+	.4byte atk09_attackanimation
+	.4byte atk0A_waitanimation
+	.4byte atk0B_healthbarupdate
 	.4byte atk0C_datahpupdate
 	.4byte atk0D_critmessage
-	.4byte atk0E_missmessage
+	.4byte atk0E_effectiveness_sound
 	.4byte atk0F_resultmessage
 	.4byte atk10_printstring
-	.4byte atk11_printstring2
+	.4byte atk11_printstring_playeronly
 	.4byte atk12_waitmessage
 	.4byte atk13_printfromtable
-	.4byte atk14_printfromtable2
+	.4byte atk14_printfromtable_playeronly
 	.4byte atk15_seteffectwithchancetarget
-	.4byte sub_801F708
-	.4byte sub_801F718
-	.4byte sub_801F728
-	.4byte sub_801F7AC
-	.4byte sub_801FB34
-	.4byte atkE2_cmde2
+	.4byte atk16_seteffectprimary
+	.4byte atk17_seteffectsecondary
+	.4byte atk18_status_effect_clear
+	.4byte atk19_faint_pokemon
+	.4byte atk1A_faint_animation
+	.4byte atk1B_faint_effects_clear
 	.4byte atk1C_jumpifstatus
-	.4byte atk1D_jumpifsecondarystatus
+	.4byte atk1D_jumpifstatus2
 	.4byte atk1E_jumpifability
-	.4byte sub_801FDB4
-	.4byte sub_801FE2C
-	.4byte atk21_jumpifspecialstatusflag
-	.4byte sub_801FFA8
-	.4byte sub_8020004
-	.4byte sub_80209B4
-	.4byte atk25_resetflags
-	.4byte sub_8020BB4
-	.4byte atk27_cmd27
-	.4byte sub_8020C14
+	.4byte atk1F_jumpifsideaffecting
+	.4byte atk20_jumpifstat
+	.4byte atk21_jumpifstatus3
+	.4byte atk22_jumpiftype
+	.4byte atk23_getexp
+	.4byte atk24
+	.4byte atk25_move_values_cleanup
+	.4byte atk26_set_multihit
+	.4byte atk27_decrement_multihit
+	.4byte atk28_goto
 	.4byte atk29_jumpifbyte
-	.4byte sub_8020CD4
-	.4byte sub_8020D7C
-	.4byte sub_8020E30
-	.4byte sub_8020EB8
-	.4byte sub_8020F3C
-	.4byte sub_8020F64
-	.4byte sub_8020F90
+	.4byte atk2A_jumpifhalfword
+	.4byte atk2B_jumpifword
+	.4byte atk2C_jumpifarrayequal
+	.4byte atk2D_jumpifarraynotequal
+	.4byte atk2E_setbyte
+	.4byte atk2F_addbyte
+	.4byte atk30_subbyte
 	.4byte atk31_copyarray
-	.4byte atk32_memcpy_with_offset
-	.4byte sub_802107C
+	.4byte atk32_copyarray_withindex
+	.4byte atk33_orbyte
 	.4byte atk34_orhalfword
 	.4byte atk35_orword
-	.4byte sub_8021124
+	.4byte atk36_bicbyte
 	.4byte atk37_bichalfword
 	.4byte atk38_bicword
 	.4byte atk39_pause
-	.4byte sub_802120C
-	.4byte atk3B_8022C68
+	.4byte atk3A_waitstate
+	.4byte atk3B_healthbar_update
 	.4byte atk3C_return
-	.4byte sub_8021290
-	.4byte sub_80212B0
+	.4byte atk3D_end
+	.4byte atk3E_end2
 	.4byte atk3F_end3
-	.4byte atk40_801DBA0
+	.4byte atk40_jump_if_move_affected_by_protect
 	.4byte atk41_call
 	.4byte atk42_jumpiftype2
-	.4byte sub_8021384
-	.4byte sub_80213D0
-	.4byte atk46_cmd46
-	.4byte sub_80214B4
-	.4byte atk47
+	.4byte atk43_jumpifabilitypresent
+	.4byte atk44
+	.4byte atk45_playanimation
+	.4byte atk46_playanimation2
+	.4byte atk47_setgraphicalstatchangevalues
 	.4byte atk48_playstatchangeanimation
 	.4byte sub_80217F8
 	.4byte atk4A_damageflags
@@ -1305,7 +1305,7 @@ gCriticalHitChance:: @ 81FAB50
 	.2byte  2 @ +4
 
 	.align 2
-gUnknown_081FAB5C:: @ 81FAB5C
+gStatusFlagsForMoveEffects:: @ 81FAB5C
 	.4byte 0x00000000
 	.4byte 0x00000007
 	.4byte 0x00000008
@@ -1368,7 +1368,7 @@ gUnknown_081FAB5C:: @ 81FAB5C
 	.4byte 0x00000000
 
 	.align 2
-gUnknown_081FAC4C:: @ 81FAC4C
+gMoveEffectBS_Ptrs:: @ 81FAC4C
 	.4byte BattleScript_1D963E
 	.4byte BattleScript_1D963E
 	.4byte BattleScript_1D965A
@@ -1733,7 +1733,7 @@ gUnknown_081FAF5C:: @ 81FAF5C
 	.byte 0xB0, 0xB0, 0xC8, 0x98, 0x28, 0x28, 0x28, 0x20
 
 	.align 2
-gUnknown_081FB048:: @ 81FB048
+gLinkOpponentBufferCommands:: @ 81FB048
 	.4byte dp01t_00_4_getattr
 	.4byte sub_803889C
 	.4byte sub_80388A8

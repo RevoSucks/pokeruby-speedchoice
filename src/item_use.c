@@ -35,12 +35,12 @@ extern void (* gUnknown_03004AE4)(u8);
 
 extern u8 gUnknown_02038561;
 extern u8 gLastFieldPokeMenuOpened;
-extern u8 gUnknown_02024E6C;
+extern u8 gBankInMenu;
 
 extern u8 gUnknown_081A1654[];
 extern u8 gUnknown_081A168F[];
 
-extern u16 gUnknown_02024A6A[];
+extern u16 gBattlePartyID[];
 
 extern void HandleItemMenuPaletteFade(u8);
 extern void ExecuteItemUseFromBlackPalette(void);
@@ -1098,7 +1098,7 @@ void sub_80CA2BC(u8 taskId)
 
 void ItemUseInBattle_StatIncrease(u8 taskId)
 {
-    u16 partyId = gUnknown_02024A6A[gUnknown_02024E6C];
+    u16 partyId = gBattlePartyID[gBankInMenu];
 
     MenuZeroFillWindowRect(0, 0xD, 0xD, 0x14);
 

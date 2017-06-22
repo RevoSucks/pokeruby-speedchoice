@@ -55,11 +55,11 @@ extern vu16 GPIOPortDirection;
 static u16 sDummy; // unused variable
 static bool8 sLocked;
 
-static int WriteCommand(u8 value);
-static int WriteData(u8 value);
-static u8 ReadData();
-static void EnableGpioPortRead();
-static void DisableGpioPortRead();
+int WriteCommand(u8 value);
+int WriteData(u8 value);
+u8 ReadData();
+void EnableGpioPortRead();
+void DisableGpioPortRead();
 
 static const char AgbLibRtcVersion[] = "SIIRTC_V001";
 
@@ -365,7 +365,7 @@ bool8 SiiRtcSetAlarm(struct SiiRtcInfo *rtc)
     return TRUE;
 }
 
-static int WriteCommand(u8 value)
+int WriteCommand(u8 value)
 {
     u8 i;
     u8 temp;
@@ -382,7 +382,7 @@ static int WriteCommand(u8 value)
     // control reaches end of non-void function
 }
 
-static int WriteData(u8 value)
+int WriteData(u8 value)
 {
     u8 i;
     u8 temp;
@@ -399,7 +399,7 @@ static int WriteData(u8 value)
     // control reaches end of non-void function
 }
 
-static u8 ReadData()
+u8 ReadData()
 {
     u8 i;
     u8 temp;
@@ -421,12 +421,12 @@ static u8 ReadData()
     return value;
 }
 
-static void EnableGpioPortRead()
+void EnableGpioPortRead()
 {
     GPIO_PORT_READ_ENABLE = 1;
 }
 
-static void DisableGpioPortRead()
+void DisableGpioPortRead()
 {
     GPIO_PORT_READ_ENABLE = 0;
 }
