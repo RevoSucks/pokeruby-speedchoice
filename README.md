@@ -7,10 +7,6 @@ It builds the following roms:
 * pokeruby.gba `sha1: 8cea81e03d537211b3c26d7f6f0608d0f9183e53`
 * pokesapphire.gba `sha1: ee47a0010eb1700169d58d515485a228939df8c4`
 
-Currently, the following options do not work yet:
-
-* BW Exp
-
 To set up the repository, see [INSTALL.md](INSTALL.md).
 
 ### irc: [freenode#pret][irc]
