@@ -4915,7 +4915,7 @@ void atk23_getexp(void)
 {
     u8 hold_effect;
     int via_expshare = 0, sent_in;
-	int via_sent_in;
+    int via_sent_in;
     u16* exp = &BATTLE_STRUCT->exp;
     gBank1 = GetBattleBank(BSScriptRead8(gBattlescriptCurrInstr + 1));
     sent_in = gSentPokesToOpponent[(gBank1 & 2) >> 1];
@@ -4932,8 +4932,8 @@ void atk23_getexp(void)
         break;
     case 1: //calculate experience points to redistribute
         {
-			int i;
-			u16 calculatedExp;
+            int i;
+            u16 calculatedExp;
             via_sent_in = 0;
             for (i = 0; i < 6; i++)
             {
@@ -5015,22 +5015,7 @@ void atk23_getexp(void)
                         gBattleMoveDamage = *exp;
                     else
                         gBattleMoveDamage = 0;
-
-                    if (hold_effect == HOLD_EFFECT_EXP_SHARE)
-                        gBattleMoveDamage += gExpShareExp;
-                    if (hold_effect == HOLD_EFFECT_LUCKY_EGG)
-                        gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
-                    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-                        gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
-
-                    if (IsTradedMon(&gPlayerParty[BATTLE_STRUCT->expGetterID]))
-                    {
-                        gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
-                        stringID = 0x14A;
-                    }
-                    else
-                        stringID = 0x149;
-
+                    
                     //get exp getter bank
                     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
                     {
@@ -5047,54 +5032,62 @@ void atk23_getexp(void)
                     else
                         BATTLE_STRUCT->expGetterBank = 0;
 
-    // redo how the experience is entirely calculated.
-    if(CheckSpeedchoiceOption(BWEXP, ON) == TRUE)
-    {
-        #define EXP_CONSTANT_GENV 7
-		s16 newCalculatedExp;
-        u32 upperRatio;
-        u32 lowerRatio;
+                    if(CheckSpeedchoiceOption(BWEXP, ON) == TRUE)
+                    {
+                        u32 upperRatio;
+                        u32 lowerRatio;
+                        
+                        if (hold_effect == HOLD_EFFECT_EXP_SHARE)
+                            gBattleMoveDamage += gExpShareExp; // add exp share FIRST, other wise it wont transform
 
-        // step 1
-        newCalculatedExp = gBaseStats[gBattleMons[gBank1].species].expYield * gBattleMons[gBank1].level / EXP_CONSTANT_GENV;
-		if (via_expshare) // i literally copy pasted this.
-        {
-            newCalculatedExp /= 2;
-            *exp = newCalculatedExp / via_sent_in;
-            ATLEAST_ONE_PTR(exp);
+                        if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+                            gBattleMoveDamage = (gBattleMoveDamage * 150) / 100; // x 1.5
 
-            gExpShareExp = newCalculatedExp / via_expshare;
-            ATLEAST_ONE_PTR(&gExpShareExp);
-        }
-        else
-        {
-            *exp = newCalculatedExp / via_sent_in;
-            ATLEAST_ONE_PTR(exp);
-            gExpShareExp = 0;
-        }
-		if (BATTLE_STRUCT->sentInPokes & 1)
-            newCalculatedExp = *exp;
-        else
-            newCalculatedExp = 0;
-        if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-            newCalculatedExp = (newCalculatedExp * 150) / 100; // x 1.5
+                        // step 2, calculate ratio
+                        upperRatio = ((gBattleMons[gBank1].level * 2) + 10);
+                        upperRatio *= upperRatio * Sqrt(upperRatio);
+                        lowerRatio = (gBattleMons[gBank1].level + gPlayerParty[BATTLE_STRUCT->expGetterID].level + 10);
+                        lowerRatio *= lowerRatio * Sqrt(lowerRatio);
 
-        // step 2, calculate ratio
-        upperRatio = ((gBattleMons[gBank1].level * 2) + 10);
-        upperRatio *= upperRatio * Sqrt(upperRatio);
-        lowerRatio = (gBattleMons[gBank1].level + gBattleMons[BATTLE_STRUCT->expGetterBank].level + 10);
-        lowerRatio *= lowerRatio * Sqrt(lowerRatio);
+                        // step 3, calculate ratio product and multiply rest.
+                        gBattleMoveDamage = max(gBattleMoveDamage, gBattleMoveDamage * upperRatio / lowerRatio) + 1;
+                        if (IsTradedMon(&gPlayerParty[BATTLE_STRUCT->expGetterID]))
+                        {
+                            gBattleMoveDamage = (gBattleMoveDamage * 150) / 100; // x 1.5
+                            stringID = 0x14A;
+                        }
+                        else
+                            stringID = 0x149;
+                        if (hold_effect == HOLD_EFFECT_LUCKY_EGG)
+                            gBattleMoveDamage = (gBattleMoveDamage * 150) / 100; // x 1.5
+                    }
+                    else // normal handling
+                    {
+                        if (hold_effect == HOLD_EFFECT_EXP_SHARE)
+                            gBattleMoveDamage += gExpShareExp;
+                        if (hold_effect == HOLD_EFFECT_LUCKY_EGG)
+                            gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
+                        if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+                            gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
 
-        // step 3, calculate ratio product and multiply rest.
-        newCalculatedExp = max(newCalculatedExp, newCalculatedExp * upperRatio / lowerRatio) + 1;
-        if (IsTradedMon(&gPlayerParty[BATTLE_STRUCT->expGetterID]))
-            newCalculatedExp = (newCalculatedExp * 150) / 100; // x 1.5
-        if (hold_effect == HOLD_EFFECT_LUCKY_EGG)
-            newCalculatedExp = (newCalculatedExp * 150) / 100; // x 1.5
-        if (hold_effect == HOLD_EFFECT_EXP_SHARE)
-            newCalculatedExp += gExpShareExp;
-		gBattleMoveDamage = newCalculatedExp;
-    }
+                        if (IsTradedMon(&gPlayerParty[BATTLE_STRUCT->expGetterID]))
+                        {
+                            gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
+                            stringID = 0x14A;
+                        }
+                        else
+                            stringID = 0x149;
+                    }
+                    
+                    // i don't even care that this is a walle303 solution. I am NOT updating the randomizer for the 11th bajillion time.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
+                    asm("nop"); // pad the ROM so the randomizer still works. Fuck updating the randomizer again, I hate it.
 
                     //buffer poke name
                     gBattleTextBuff1[0] = 0xFD;

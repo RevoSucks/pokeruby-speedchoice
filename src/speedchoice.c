@@ -21,7 +21,7 @@ extern u8 gSystemText_Terminator[];
 
 // HEADER
 const u8 gSpeedchoiceTextHeader[] = _("{PALETTE 9}SPEEDCHOICE MENU");
-const u8 gSpeedchoiceCurrentVersion[] = _("{PALETTE 9}v1.0");
+const u8 gSpeedchoiceCurrentVersion[] = _("{PALETTE 9}v1.02");
 
 // OPTION CHOICES
 const u8 gSpeedchoiceTextYes[] = _("{PALETTE 15}YES");
@@ -69,7 +69,7 @@ const u8 gSpeedchoiceTooltipInstantText[] = _("Self-explanatory.\nHold A or B to
 const u8 gSpeedchoiceTooltipSpinners[] = _("PURGE: Makes spinners on a static\nspinning pattern at a fixed rate.\pHELL: Rapidly spins\nevery spinner every frame.\pAlso fixes bag manip.");
 const u8 gSpeedchoiceTooltipMaxVision[] = _("SANE: Will extend trainer vision\nto 8, but prevent trainers from\pwalking through walls or solid\nobjects.\pHELL: No collision or\nelevation detection.");
 const u8 gSpeedchoiceTooltipNerfGymLeaders[] = _("Reduces Gym Leader Roxanne’s\nteam levels by 2 and\premoves 1 of her potions.\pAlso nerfs Gym Leader Wattson’s\nteam levels by 3 and removes one\pof his Super Potions.");
-const u8 gSpeedchoiceTooltipSuperBike[] = _("While riding the bicycle, you\ncan switch between bikes with\pthe R button.");
+const u8 gSpeedchoiceTooltipSuperBike[] = _("While riding the bicycle, you\ncan switch between bikes with\pthe R button while you are\nstanding still.");
 const u8 gSpeedchoiceTooltipNewWildEnc[] = _("Intended to be used with\nthe randomizer.\pTreats grass and fishing slots\nas 6 and 2 slots respectively.");
 const u8 gSpeedchoiceTooltipEarlyFly[] = _("Recieve HM02 instead of\nItemfinder at Rival 2.\pAllows use of Fly without use of\nGym 6’s badge.");
 const u8 gSpeedchoiceTooltipRunEverywhere[] = _("Allows the Running Shoes to\nbe used anywhere, including\pinside of houses.\pAlso allows bike in most places.");

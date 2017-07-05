@@ -1054,7 +1054,7 @@ int MatsudaDebugMenu_SetArtMuseumItems(void)
     return 1;
 }
 
-void unref_sub_80AB084(u8 *text)
+void unref_sub_80AB084(const u8 *text) // DoCrashAssert
 {
     u16 savedIme;
     u8 *addr;

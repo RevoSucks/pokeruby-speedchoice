@@ -134,7 +134,7 @@ static u8 ExtCtrlCode_WaitButton(struct Window *);
 static u8 ExtCtrlCode_WaitSound(struct Window *);
 static u8 ExtCtrlCode_PlayBGM(struct Window *);
 static u8 ExtCtrlCode_Escape(struct Window *);
-static u8 ExtCtrlCode_Nop2(struct Window *);
+u8 ExtCtrlCode_Nop2(struct Window *);
 static u8 ExtCtrlCode_SetCursorY(struct Window *);
 static u8 ExtCtrlCode_ClearWindowTextLines(struct Window *);
 static u8 ExtCtrlCode_PlaySE(struct Window *);
