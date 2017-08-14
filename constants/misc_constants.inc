@@ -49,7 +49,7 @@
 	.equiv INSTANTTEXT, 2
 	.equiv SPINNERS, 3
 	.equiv MAX_VISION, 4
-	.equiv NERFGYMLEADERS, 5
+	.equiv NERFGEN3PERCENT, 5
 	.equiv SUPER_BIKE, 6
 	.equiv NEWWILDENC, 7
 	.equiv EARLYFLY, 8

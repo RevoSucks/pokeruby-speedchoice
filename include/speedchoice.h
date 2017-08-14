@@ -2,11 +2,11 @@
 #define GUARD_SPEEDCHOICE_H
 
 // global speedchoice config
-#define CURRENT_OPTIONS_NUM 15
+#define CURRENT_OPTIONS_NUM 16
 #define MAX_CHOICES 6
 #define OPTIONS_PER_PAGE 5
 #define ALLOPTIONS_PER_PAGE OPTIONS_PER_PAGE + 2 // page + start game
-#define MAX_PAGES 3
+#define MAX_PAGES 4
 
 #define MENUOPTIONCOORDS(i) (5 + (2 * i))
 
@@ -32,7 +32,7 @@ enum
     INSTANTTEXT,
     SPINNERS,
     MAXVISION,
-    NERFGYMLEADERS,
+    NERFGEN3PERCENT,
     SUPERBIKE,
     NEWWILDENC,
     EARLYFLY,
@@ -42,9 +42,10 @@ enum
     GLITCH_ROD,
     BETTER_MARTS,
     GOOD_EARLY_WILDS,
+    EARLYSURF,
 
     // STATIC OPTIONS
-    PAGE, // to make it match task data
+    PAGE,
     START_GAME
 };
 
@@ -94,6 +95,23 @@ enum
     // hell is taken up by 2.
 };
 
+// percents
+enum
+{
+	PERC_80,
+	PERC_90,
+	PERC_100,
+	PERC_110,
+	PERC_120,
+};
+
+// option types
+enum
+{
+    NORMAL, // selectable
+    ARROW_SELECTABLE
+};
+
 struct OptionChoiceConfig
 {
     s16 x; // do not store the Y coordinate. Y is automatically calculated depending on the row the option is placed and therefore is not necessary.
@@ -104,6 +122,7 @@ struct OptionChoiceConfig
 struct SpeedchoiceOption
 {
     u8 optionCount; // needed for process general input, im sure there's a way to avoid using this
+    u8 optionType;
     u8 *string;
     struct OptionChoiceConfig *options; // use a NULL for non existent ones, optional things in structs were introduced in C++ and this is limited.
     u8 *tooltip;

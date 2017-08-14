@@ -600,16 +600,16 @@ void dp01_build_cmdbuf_x01_a_b_0(u8 a, u8 b, u8 c)
     dp01_prepare_buffer(a, gBattleBuffersTransferData, 4);
 }
 
-void EmitSetAttributes(u8 a, u8 b, u8 c, u8 d, u8 *e)
+void EmitSetAttributes(u8 a, u8 request, u8 c, u8 bytes, void *data)
 {
     int i;
 
     gBattleBuffersTransferData[0] = 2;
-    gBattleBuffersTransferData[1] = b;
+    gBattleBuffersTransferData[1] = request;
     gBattleBuffersTransferData[2] = c;
-    for (i = 0; i < d; i++)
-        gBattleBuffersTransferData[3 + i] = *(e++);
-    dp01_prepare_buffer(a, gBattleBuffersTransferData, d + 3);
+    for (i = 0; i < bytes; i++)
+        gBattleBuffersTransferData[3 + i] = *(u8*)(data++);
+    dp01_prepare_buffer(a, gBattleBuffersTransferData, bytes + 3);
 }
 
 void unref_sub_800C6A4(u8 a, u8 b, u8 c, u8 *d)
@@ -713,7 +713,7 @@ enum
     TRAINER_BLOCK
 };
 
-void dp01_build_cmdbuf_x0D_a(u8 a, u8 shakes)
+void EmitBallThrowAnim(u8 a, u8 shakes)
 {
 	if(shakes == THREE_SHAKES)
 		shakes = (Random() % 3); // no 3 shakes.

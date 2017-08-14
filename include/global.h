@@ -636,7 +636,7 @@ struct SpeedchoiceSaveOptions
     u8 instantText:1;
     u8 spinners:2;
     u8 maxVision:2;
-    u8 nerfGymLeaders:1;
+    u8 nerfGen3Percent:8; // specify 8 bits so it doesnt pad and waste bits!
     u8 superbike:1;
     u8 newwildencounters:1;
     u8 earlyfly:1;
@@ -646,6 +646,7 @@ struct SpeedchoiceSaveOptions
     u8 glitchRod:1;
     u8 betterMarts:1;
     u8 goodEarlyWilds:2;
+    u8 earlysurf:1;
 };
 
 struct SaveBlock2 /* 0x02024EA4 */

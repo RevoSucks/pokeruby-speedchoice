@@ -328,6 +328,18 @@ struct BattlePokemon
  /* 0x54 */ u32 otId;
 };
 
+enum
+{
+    STAT_STAGE_HP,       // 0
+    STAT_STAGE_ATK,      // 1
+    STAT_STAGE_DEF,      // 2
+    STAT_STAGE_SPEED,    // 3
+    STAT_STAGE_SPATK,    // 4
+    STAT_STAGE_SPDEF,    // 5
+    STAT_STAGE_ACC,      // 6
+    STAT_STAGE_EVASION,  // 7
+};
+
 struct BaseStats
 {
  /* 0x00 */ u8 baseHP;
@@ -374,6 +386,14 @@ struct BattleMove
     u32 flags;
 };
 
+// new labels
+#define FLAG_MAKES_CONTACT       0x1
+#define FLAG_PROTECT_AFFECTED    0x2
+#define FLAG_MAGICCOAT_AFFECTED  0x4
+#define FLAG_SNATCH_AFFECTED     0x8
+#define FLAG_KINGSROCK_AFFECTED 0x20
+
+// old labels
 #define PROTECT_AFFECTED    0x2
 #define MAGICCOAT_AFFECTED  0x4
 #define SNATCH_AFFECTED 0x8
@@ -481,4 +501,5 @@ void MonRestorePP(struct Pokemon *);
 u8 *sub_803F378(u16 itemId);
 
 u16 NationalPokedexNumToSpecies(u16 nationalNum);
+bool8 IsOtherTrainer(u32, u8 *);
 #endif // GUARD_POKEMON_H
